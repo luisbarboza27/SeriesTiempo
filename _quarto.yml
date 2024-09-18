@@ -1,0 +1,23 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Series de Tiempo"
+  author: "Luis A. Barboza"
+  date: "9/16/2024"
+  chapters:
+    - index.qmd
+    - box_jenk.qmd
+
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+

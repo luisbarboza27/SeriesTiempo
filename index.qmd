@@ -1,0 +1,3 @@
+# Prefacio {.unnumbered}
+
+Notas computacionales de clase para el curso CA0415, Series de Tiempo.

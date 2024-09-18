@@ -1,0 +1,42 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Series de Tiempo",
+    "section": "",
+    "text": "Prefacio\nNotas computacionales de clase para el curso CA0415, Series de Tiempo.",
+    "crumbs": [
+      "Prefacio"
+    ]
+  },
+  {
+    "objectID": "box_jenk.html",
+    "href": "box_jenk.html",
+    "title": "1  Enfoque de Box-Jenkins",
+    "section": "",
+    "text": "1.1 Ejemplos de series temporales\nSerie de tiempo de Johnson & Johnson\njj_tibble &lt;- tk_tbl(jj)\njj_tibble %&gt;% \n  ggplot(aes(x = index, y = value)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"Ganancia\")+\n  theme_bw()\nSerie de tiempo de temperaturas globales\ntemp_tibble &lt;- tk_tbl(gtemp_both)\ntemp_tibble %&gt;% \n  ggplot(aes(x = index, y = value)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"Anomalías de Temp.\")+\n  theme_bw()\nSerie de tiempo del índice de Dow Jones:\ndjia_tibble &lt;- tk_tbl(djia)\ndjia_tibble %&gt;% \n  select(index,Close) %&gt;%\n  ggplot(aes(x = index, y = Close)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"Precio de Cierre\")+\n  theme_bw()\nY después de calcular los log-retornos:\ndjiar &lt;- diff(log(djia$Close))[-1]\ndjiar_tibble &lt;- tk_tbl(djiar)\ndjiar_tibble  %&gt;% \n  select(index,Close) %&gt;%\n  ggplot(aes(x = index, y = Close)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"Precio de Cierre\")+\n  theme_bw()\nSerie de tiempo del Niño y la población de peces:\nsoi_tibble &lt;- tk_tbl(soi) %&gt;% rename(soi = value)\n\nsoi_tsibble &lt;- soi_tibble %&gt;% mutate(index = yearmonth(index)) %&gt;%\n  as_tsibble(index = index)\n\nrec_tibble &lt;- tk_tbl(rec) %&gt;% rename(rec = value)\n\nrec_tsibble &lt;- rec_tibble %&gt;% mutate(index = yearmonth(index)) %&gt;%\n  as_tsibble(index = index)\n\nsoi_tsibble %&gt;% \n  ggplot(aes(x = index, y = soi)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"SOI\")+\n  theme_bw()\n\n\n\n\n\n\n\nrec_tsibble %&gt;% \n  ggplot(aes(x = index, y = rec)) +\n  geom_line() +\n  labs(x = \"Tiempo\", y = \"REC\")+\n  theme_bw()",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Enfoque de Box-Jenkins</span>"
+    ]
+  },
+  {
+    "objectID": "box_jenk.html#gráficos-de-la-función-de-autocorrelación-estimada.",
+    "href": "box_jenk.html#gráficos-de-la-función-de-autocorrelación-estimada.",
+    "title": "1  Enfoque de Box-Jenkins",
+    "section": "1.2 Gráficos de la función de autocorrelación estimada.",
+    "text": "1.2 Gráficos de la función de autocorrelación estimada.\nSiguiendo este último ejemplo, vamos a calcular el ACF de ambas series de SOI y REC:\n\nACF_soi &lt;- soi_tsibble %&gt;% ACF(soi,lag_max = 24)\n\nsoi_tsibble %&gt;% ACF(soi,lag_max = 24) %&gt;%\n  autoplot() +\n  theme_bw()+labs(x = \"Lag\", y = \"ACF\")\n\n\n\n\n\n\n\nrec_tsibble %&gt;% ACF(rec,lag_max = 24) %&gt;%\n  autoplot() +\n  theme_bw()+labs(x = \"Lag\", y = \"ACF\")\n\n\n\n\n\n\n\n\nNoten que en la primera línea del codigo anterior se extrae directamente el ACF de la serie SOI. A continuación el CCF de ambas series:\n\nsoi_rec_tsibble &lt;- soi_tsibble %&gt;% left_join(rec_tsibble,by = \"index\")\n\nsoi_rec_tsibble %&gt;% CCF(x = soi, y = rec, lag_max = 24) %&gt;%\n  autoplot() +\n  theme_bw() +\n  labs(x = \"Lag\", y = \"CCF\")",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Enfoque de Box-Jenkins</span>"
+    ]
+  },
+  {
+    "objectID": "box_jenk.html#análisis-exploratorio-de-series-de-tiempo",
+    "href": "box_jenk.html#análisis-exploratorio-de-series-de-tiempo",
+    "title": "1  Enfoque de Box-Jenkins",
+    "section": "1.3 Análisis exploratorio de series de tiempo",
+    "text": "1.3 Análisis exploratorio de series de tiempo\n\n1.3.1 Descomposición de componente trigonométrico:\n\nset.seed(1492)\nnum &lt;- 120\nt &lt;- 1:num\n\nX &lt;- ts(2*cos(2*pi*t/12) + rnorm(120), frequency = 12)\nY &lt;- ts(2*cos(2*pi*(t+5)/12) + rnorm(120), frequency = 12)\n\n\nYw &lt;- resid(lm(Y ~ cos(2*pi*t/12) + sin(2*pi*t/12)))\n\n\nX_df &lt;- data.frame(\n  index = time(X),\n  value = as.numeric(X),\n  series = \"X\"\n)\n\nYw_df &lt;- data.frame(\n  index = time(Y),\n  value = as.numeric(Yw),\n  series = \"Yw\"\n)\n\n\ncombined_df &lt;- bind_rows(X_df, Yw_df)\n\n\ncombined_tsibble &lt;- as_tsibble(combined_df, index = index, key = series)\n\n\nggplot(combined_tsibble, aes(x = index, y = value)) +\n  geom_line() +\n  facet_wrap(~series, scales = \"free_y\") +  # Facet plot with free y-axis scales\n  labs(title = \"Time Series Plot\",\n       x = \"Time\",\n       y = \"Value\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nCon lo cual se compara una de las dos series originales con los residuos después de haberle ajustado un componente triginométrico.\n\n\n1.3.2 Descomposición de tendencia a través de regresión lineal\n\nchicken_tibble &lt;- tk_tbl(chicken)\n\nchicken_tsibble &lt;- as_tsibble(chicken, index = time(chicken)) %&gt;%\n  rename(chicken = value)\n\nfit_pollo &lt;- chicken_tsibble %&gt;%\n  model(lm = TSLM(chicken ~ trend()))\n\nmodel_summary &lt;- glance(fit_pollo)\nprint(model_summary)\n\n# A tibble: 1 × 15\n  .model r_squared adj_r_squared sigma2 statistic  p_value    df log_lik   AIC\n  &lt;chr&gt;      &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;\n1 lm         0.917         0.917   22.1     1974. 2.83e-98     2   -533.  561.\n# ℹ 6 more variables: AICc &lt;dbl&gt;, BIC &lt;dbl&gt;, CV &lt;dbl&gt;, deviance &lt;dbl&gt;,\n#   df.residual &lt;int&gt;, rank &lt;int&gt;\n\nmodel_coefficients &lt;- tidy(fit_pollo)\nprint(model_coefficients)\n\n# A tibble: 2 × 6\n  .model term        estimate std.error statistic   p.value\n  &lt;chr&gt;  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;\n1 lm     (Intercept)   58.6     0.703        83.3 1.54e-144\n2 lm     trend()        0.299   0.00674      44.4 2.83e- 98\n\nresiduals_df &lt;- augment(fit_pollo) %&gt;%\n  select(index, .resid) %&gt;%\n  rename(residuals = .resid)\n\n\nggplot(residuals_df, aes(x = index, y = residuals)) +\n  geom_line() +\n  labs(title = \"Residuals of the Linear Model\",\n       x = \"Time\",\n       y = \"Residuals\") +\n  theme_minimal()\n\n\n\n\n\n\n\nacf_residuals &lt;- acf(residuals_df$residuals, plot = FALSE)\n\nacf_df &lt;- data.frame(\n  lag = acf_residuals$lag,\n  acf = acf_residuals$acf\n)\n\nggplot(acf_df, aes(x = lag, y = acf)) +\n  geom_bar(stat = \"identity\") +\n  labs(title = \"ACF of Residuals\",\n       x = \"Lag\",\n       y = \"ACF\") +\n  theme_minimal()",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Enfoque de Box-Jenkins</span>"
+    ]
+  }
+]
