@@ -9,6 +9,7 @@ book:
   chapters:
     - index.qmd
     - box_jenk.qmd
+    - cap4.qmd
 
 
 bibliography: references.bib

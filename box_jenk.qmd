@@ -23,7 +23,6 @@ jj_tibble %>%
   theme_bw()
 ```
 
-
 Serie de tiempo de temperaturas globales
 
 ```{r}
@@ -48,6 +47,7 @@ djia_tibble %>%
 ```
 
 Y después de calcular los log-retornos:
+
 ```{r}
 
 djiar <- diff(log(djia$Close))[-1]
@@ -89,7 +89,6 @@ rec_tsibble %>%
 ## Gráficos de la función de autocorrelación estimada.
 
 Siguiendo este último ejemplo, vamos a calcular el ACF de ambas series de SOI y REC:
-
 
 ```{r}
 
@@ -209,5 +208,3 @@ ggplot(acf_df, aes(x = lag, y = acf)) +
   theme_minimal()
 
 ```
-
-

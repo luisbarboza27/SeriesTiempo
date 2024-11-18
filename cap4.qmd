@@ -1,0 +1,310 @@
+---
+title: "Capítulo 4"
+---
+
+## Decomposing a Non-Sinusoidal Cycle Using Regression
+
+### Introduction
+
+This example demonstrates how to decompose a simple dataset into its frequency components using regression. The data given complete one cycle but not in a sinusoidal way, so the first frequency component $\omega_1 = 1/5$ is expected to be large, while the second component $\omega_2 = 2/5$ is expected to be small.
+
+### Data and Frequency Components
+
+The dataset ( x = {1, 2, 3, 2, 1} ) is examined with the two frequency components. We use cosines and sines at the relevant frequencies to perform the decomposition.
+
+```{r}
+# Define the dataset
+x = c(1, 2, 3, 2, 1)
+
+# Define cosine and sine terms for the first and second frequency components
+c1 = cos(2 * pi * 1:5 * 1/5)
+s1 = sin(2 * pi * 1:5 * 1/5)
+c2 = cos(2 * pi * 1:5 * 2/5)
+s2 = sin(2 * pi * 1:5 * 2/5)
+
+# Combine the components into matrices for regression
+omega1 = cbind(c1, s1)
+omega2 = cbind(c2, s2)
+anova(lm(x~omega1+omega2))
+
+
+```
+
+This analysis presents the periodograms of the SOI and Recruitment series. It explores the significance of certain periodicities, particularly the yearly cycle and a potential four-year El Niño cycle. Confidence intervals for these spectral peaks are also calculated, but the results show wide intervals, making it difficult to assert the significance of the four-year cycle. The periodograms for the SOI and Recruitment series show: - A narrow-band peak at the yearly cycle ( $\omega = 1/12$ ). - A wide-band peak centered around the four-year cycle ( $\omega = 1/48$ ), possibly linked to El Niño.
+
+```{r}
+### R Code to Reproduce the Periodogram
+# Load the astsa package
+library(astsa)
+
+# Set up plotting parameters
+par(mfrow=c(2,1))
+
+# Compute and plot the periodogram for the SOI series
+soi.per = mvspec(soi, log="no")
+abline(v=1/4, lty=2) # Add a vertical line at the four-year cycle
+
+# Compute and plot the periodogram for the Recruitment series
+rec.per = mvspec(rec, log="no")
+abline(v=1/4, lty=2)
+
+```
+
+Confidence Intervals for Spectral Estimates
+
+We compute approximate 95% confidence intervals for the spectrum at the yearly cycle $\omega=1/12$, and the possible four-year cycle $\omega = 1/48$.
+
+```{r}
+# Confidence interval boundaries
+U = qchisq(.025, 2)  # 0.05063
+L = qchisq(.975, 2)  # 7.37775
+
+# SOI periodogram values at specific frequencies
+soi_per_1_12 = soi.per$spec[40] # SOI periodogram at freq 1/12 = 40/480
+soi_per_1_48 = soi.per$spec[10] # SOI periodogram at freq 1/48 = 10/480
+
+# Confidence intervals for the yearly cycle
+CI_1_12 = c(2 * soi_per_1_12 / L, 2 * soi_per_1_12 / U) 
+CI_1_12 # Approximate 95% CI for the yearly cycle
+
+# Confidence intervals for the four-year cycle
+CI_1_48 = c(2 * soi_per_1_48 / L, 2 * soi_per_1_48 / U) 
+CI_1_48 # Approximate 95% CI for the four-year cycle
+
+```
+
+Interpretation
+
+-   The periodogram at the yearly cycle $\omega = 1/12$ is significant, with a 95% confidence interval that suggests its importance in the SOI series.
+-   The wide confidence interval at $\omega= 1/48$ (representing the four-year cycle) indicates that this peak may not be significant.
+
+Conclusion
+
+The periodogram analysis suggests the presence of a strong yearly cycle and a possible but irregular four-year cycle, which could be linked to El Niño. Further analysis is required to refine these findings.
+
+## Smoothing the Periodogram
+
+This example shows the smoothed periodogram for the SOI and Recruitment series, using a Daniell kernel to average the periodograms computed earlier. The goal is to reduce noise in the spectrum while maintaining key features, particularly the El Niño frequency. The smoothed spectra help in identifying the predominant periods and their significance.
+
+### Averaged Periodogram Calculation
+
+The Daniell kernel is used with ( L = 9 ) to compute the averaged periodograms. This provides a balance between noise reduction and retaining important peaks, as shown in the R code below.
+
+```{r}
+
+# Compute and plot the averaged periodogram for SOI
+soi.ave = mvspec(soi, kernel('daniell', 4), log='no')
+abline(v=c(.25, 1, 2, 3), lty=2) # Add vertical lines at key frequencies
+
+# Display bandwidth of the SOI periodogram
+soi.ave$bandwidth
+# Bandwidth is 0.225, adjusted for the frequency scale in cycles per year
+
+# Compute and plot the averaged periodogram for Recruitment series
+rec.ave = mvspec(rec, kernel('daniell', 4), log='no')
+abline(v=c(.25, 1, 2, 3), lty=2) # Add vertical lines at key frequencies
+```
+
+Confidence Intervals for Spectral Peaks
+
+We compute 95% confidence intervals for the SOI spectrum at key frequencies, such as the El Niño cycle (48 months) and the yearly cycle.
+
+```{r}
+# Degrees of freedom for the averaged periodogram
+df = soi.ave$df
+df # Returned value: 16.9875
+
+# Compute chi-squared limits
+U = qchisq(.025, df)  # Upper limit
+L = qchisq(.975, df)  # Lower limit
+
+# Spectrum values at key frequencies
+soi_spec_1_48 = soi.ave$spec[10]  # Spectrum at frequency 1/48
+soi_spec_1_12 = soi.ave$spec[40]  # Spectrum at frequency 1/12
+
+# Confidence intervals for the 48-month (El Niño) cycle
+CI_1_48 = c(df * soi_spec_1_48 / L, df * soi_spec_1_48 / U)
+CI_1_48 # Approximate 95% confidence interval for 1/48
+
+# Confidence intervals for the yearly cycle (1/12)
+CI_1_12 = c(df * soi_spec_1_12 / L, df * soi_spec_1_12 / U)
+CI_1_12 # Approximate 95% confidence interval for 1/12
+
+```
+
+Interpretation
+
+The smoothed spectra highlight the El Niño frequency and the yearly cycle more clearly:
+
+-   At $\omega=1/12$ (yearly cycle), the smoothing slightly flattens and spreads the peak. Harmonics of the yearly cycle appear at frequencies like $\omega=1\Delta,2\Delta,\cdots$.
+-   Confidence intervals suggest that the El Niño frequency (48 months) shows significant power, with lower limits exceeding baseline spectral levels, confirming its importance in the SOI and Recruitment series.
+
+## Introduction
+
+This example shows how to estimate the spectra of the SOI and Recruitment series using a smoothed periodogram. A modified Daniell kernel with ( m = 3 ) is applied, and the periodogram is smoothed twice. The resulting estimates are considered more visually appealing than those in previous examples.
+
+## Smoothing the Periodogram with a Modified Daniell Kernel
+
+We use the Daniell kernel, smoothed with ( m = 3 ), to estimate the spectra. The kernel coefficients are shown below.
+
+```{r}
+# Define and plot the modified Daniell kernel with m = 3
+k = kernel("modified.daniell", c(3, 3))
+
+# Display the kernel coefficients
+k$coef
+
+# Plot the kernel
+plot(k)
+
+```
+
+Estimating the Spectra for the SOI Series
+
+We now apply the smoothed kernel to the SOI series, plot the periodogram, and calculate the bandwidth and degrees of freedom.
+
+```{r}
+# Calculate and plot the smoothed periodogram for the SOI series
+soi.smo = mvspec(soi, kernel=k, taper=.1, log="no")
+abline(v=c(.25, 1), lty=2) # Add vertical lines at key frequencies
+
+# Retrieve degrees of freedom and bandwidth
+df_soi = soi.smo$df
+bandwidth_soi = soi.smo$bandwidth
+
+soi.smo$spec[soi.smo$freq==1]
+df_soi*soi.smo$spec[soi.smo$freq==1]/qchisq(0.975,df = df_soi)
+df_soi*soi.smo$spec[soi.smo$freq==1]/qchisq(0.025,df = df_soi)
+
+
+# Display degrees of freedom and bandwidth
+df_soi  # Degrees of freedom: 17.42618
+bandwidth_soi  # Bandwidth: 0.2308103
+
+```
+
+Estimating the Spectra for the Recruitment Series
+
+We repeat the above steps for the Recruitment series.
+
+```{r}
+# Calculate and plot the smoothed periodogram for the Recruitment series
+rec.smo = mvspec(rec, kernel=k, taper=.1, log="no")
+abline(v=c(.25, 1), lty=2) # Add vertical lines at key frequencies
+
+# Retrieve degrees of freedom and bandwidth
+df_rec = rec.smo$df
+bandwidth_rec = rec.smo$bandwidth
+
+# Display degrees of freedom and bandwidth
+df_rec  # Degrees of freedom: same as SOI
+bandwidth_rec  # Bandwidth: same as SOI
+
+```
+
+## Smoothed Periodogram for SOI and Recruitment Series
+
+### Introduction
+
+This example shows how to estimate the spectra of the SOI and Recruitment series using a smoothed periodogram with a modified Daniell kernel. The kernel is smoothed twice with ( m = 3 ), yielding ( $L = 2m + 1 = 7$ ). The bandwidth and degrees of freedom are calculated, and a taper of 10% is applied to reduce leakage effects.
+
+### Defining the Modified Daniell Kernel
+
+The modified Daniell kernel is created and its coefficients are displayed. This kernel is used to smooth the periodogram.
+
+```{r}
+# Define and plot the modified Daniell kernel with m = 3
+k = kernel("modified.daniell", c(3, 3))
+
+# Display the kernel coefficients
+k$coef
+
+# Plot the kernel
+plot(k)
+
+```
+
+### Smoothed Spectral Estimate for SOI
+
+The smoothed periodogram for the SOI series is calculated, applying a 10% taper to reduce spectral leakage. The degrees of freedom and bandwidth are then retrieved.
+
+```{r}
+# Calculate and plot the smoothed periodogram for the SOI series
+soi.smo = mvspec(soi, kernel=k, taper=.1, log="no")
+abline(v=c(.25, 1), lty=2) # Add vertical lines at key frequencies
+
+# Retrieve degrees of freedom and bandwidth
+df_soi = soi.smo$df
+bandwidth_soi = soi.smo$bandwidth
+
+# Display degrees of freedom and bandwidth
+df_soi  # Degrees of freedom: 17.42618
+bandwidth_soi  # Bandwidth: 0.2308103
+
+```
+
+### Smoothed Spectral Estimate for Recruitment
+
+We repeat the steps for the Recruitment series.
+
+```{r}
+# Calculate and plot the smoothed periodogram for the Recruitment series
+rec.smo = mvspec(rec, kernel=k, taper=.1, log="no")
+abline(v=c(.25, 1), lty=2) # Add vertical lines at key frequencies
+
+# Retrieve degrees of freedom and bandwidth
+df_rec = rec.smo$df
+bandwidth_rec = rec.smo$bandwidth
+
+# Display degrees of freedom and bandwidth
+df_rec  # Degrees of freedom: same as SOI
+bandwidth_rec  # Bandwidth: same as SOI
+
+```
+
+### Alternative Method for Estimation
+
+An alternative way to generate the smoothed periodogram is by using the spans argument instead of explicitly defining the Daniell kernel. The spans vector specifies the smoothing parameter in terms of $L=2m+1$, where $m=3$.
+
+```{r}
+# Alternative method using spans to define the smoothing parameter
+soi.smo_alt = mvspec(soi, taper=.1, spans=c(7, 7))
+
+```
+
+## The Effect of Tapering on the SOI Series
+
+### Introduction
+
+In this example, we examine how tapering affects the spectral estimate of the SOI series. Tapering helps mitigate the effect of spectral leakage, which can blur periodic signals in the data. We compare the spectrum with no tapering against a spectrum with full tapering (50%). The fully tapered spectrum better distinguishes between the yearly cycle (\$\omega = 1 $) and the El Niño cycle ($ \omega = 1/4 \$).
+
+### Spectral Estimation with and without Tapering
+
+We calculate the spectral estimate of the SOI series twice: once with no tapering and once with full tapering (50%).
+
+```{r}
+# Calculate the spectrum with no tapering
+s0 = mvspec(soi, spans=c(7, 7), plot=FALSE) # No taper
+
+# Calculate the spectrum with full tapering (50%)
+s50 = mvspec(soi, spans=c(7, 7), taper=.5, plot=FALSE) # Full taper
+
+
+```
+
+### Plotting the Spectral Estimates
+
+We now plot the spectral estimates on a log scale, using a solid line for the fully tapered spectrum and a dashed line for the non-tapered spectrum.
+
+```{r}
+# Plot the fully tapered spectrum (solid line)
+plot(s50$freq, s50$spec, log="y", type="l", ylab="Spectrum", xlab="Frequency")
+
+# Add the non-tapered spectrum (dashed line)
+lines(s0$freq, s0$spec, lty=2) # Dashed line for no taper
+
+```
+
+### Interpretation
+
+From the plot, we observe that tapering (solid line) leads to better separation between the yearly cycle ($\omega=1$) and the El Niño cycle ($\omega=1/4$). The non-tapered spectrum (dashed line) shows more spectral leakage, blurring these two important periodic components. By applying a taper, we reduce this leakage and obtain a clearer picture of the underlying spectral features.
