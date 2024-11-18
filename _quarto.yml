@@ -10,6 +10,7 @@ book:
     - index.qmd
     - box_jenk.qmd
     - cap4.qmd
+    - cap5.qmd
 
 
 bibliography: references.bib

@@ -1,0 +1,180 @@
+---
+title: "Capítulo 5"
+---
+
+## Analysis of U.S. GNP
+
+### Background
+
+In Example 3.39, we fit an MA(2) model and an AR(1) model to the U.S. GNP series. The residuals from both models appeared to resemble a white noise process, but Example 3.43 suggested that the AR(1) model might be a better fit. It has been proposed that the U.S. GNP series may exhibit ARCH (Autoregressive Conditional Heteroskedasticity) errors, so we will investigate this possibility in this example.
+
+If the GNP noise term follows an ARCH process, the squared residuals from the model should behave like a non-Gaussian AR(1) process, as noted in Equation 5.39.
+
+#### Initial Analysis of Residuals
+
+The following R code generates the ACF and PACF plots of the squared residuals to check for remaining dependence:
+
+```{r}
+library(astsa)
+# Fit AR(1) model to differenced log-transformed GNP
+u <- sarima(diff(log(gnp)), 1, 0, 0)
+acf2(resid(u$fit)^2, 20)  # ACF and PACF of squared residuals
+```
+
+The plots reveal that there may be some small remaining dependence in the squared residuals.
+
+#### Fitting an AR(1)-ARCH(1) Model
+
+To examine the ARCH nature of the residuals, we fit an AR(1)-ARCH(1) model to the GNP returns using the `fGarch` package. The `garchFit` function models the AR(1) and ARCH(1) components. The code and a summary of the results are shown below:
+
+```{r}
+library(fGarch)
+# Fit AR(1)-ARCH(1) model
+fit <- garchFit(~ arma(1, 0) + garch(1, 0), data = diff(log(gnp)))
+summary(fit)
+```
+
+The estimates for the AR(1) component are ( \hat{\phi_0} = 0.005 ) (mu) and ( \hat{\phi_1} = 0.367 ) (ar1). The ARCH(1) parameters are ( \alpha\_0 = 0 ) (omega) and ( \alpha\_1 = 0.194 ), which is significant with a p-value around 0.02.
+
+#### Residual Diagnostics
+
+Various tests were performed on the residuals and squared residuals. Notable results include:
+
+-   **Jarque-Bera Test**: Chi-squared statistic of 9.118 (p-value = 0.010), suggesting some non-normal skewness and kurtosis in the residuals.
+-   **Shapiro-Wilk Test**: W statistic of 0.984 (p-value = 0.014), indicating deviation from normality based on empirical order statistics.
+-   **Ljung-Box Tests**:
+    -   **Residuals \[R\]**: Q(20) statistic of 23.414 (p-value = 0.269), suggesting no significant autocorrelation in residuals.
+    -   **Squared Residuals \[R\^2\]**: Q(20) statistic of 37.743 (p-value = 0.010), indicating some dependence in squared residuals.
+
+The diagnostics imply that the ARCH(1) model captures the non-constant variance pattern, with significant ARCH effects in the U.S. GNP series.
+
+## ARCH Analysis of the DJIA Returns
+
+### Background
+
+The daily returns of the Dow Jones Industrial Average (DJIA) exhibit classic GARCH characteristics, including volatility clustering. Additionally, there is a low level of autocorrelation in the series itself. To capture both of these features, we fit an AR(1)-GARCH(1, 1) model to the series, assuming **t-distributed errors** for robustness in handling heavy tails.
+
+#### Data Preparation and Initial Analysis
+
+The DJIA returns are computed as the daily log differences of closing prices. The ACF of the returns and squared returns reveal some autocorrelation in the returns and significant autocorrelation in the squared returns, suggesting the presence of GARCH effects. The initial analysis and autocorrelation functions can be plotted with:
+
+```{r}
+library(xts)
+library(astsa)
+# Calculate daily returns
+djiar <- diff(log(djia$Close))[-1]
+
+# Autocorrelation analysis
+acf2(djiar)     # Shows slight autocorrelation in returns
+acf2(djiar^2)   # Shows strong autocorrelation in squared returns
+```
+
+#### Fitting an AR(1)-GARCH(1,1) Model
+
+The `fGarch` package in R allows for fitting an AR(1)-GARCH(1, 1) model with **t-distributed errors** to account for potential heavy tails in the DJIA returns. The following code fits the model and provides a summary of the estimates:
+
+```{r}
+library(fGarch)
+# Fit AR(1)-GARCH(1,1) model with t-distributed errors
+djia.g <- garchFit(~ arma(1, 0) + garch(1, 1), data = djiar, cond.dist = "std")
+summary(djia.g)
+#plot(djia.g)  # View model diagnostic plots
+```
+
+#### Summary of Results
+
+The AR(1) coefficient ((\hat{\phi}\_1)) is -0.05531, indicating a slight negative autocorrelation in returns. The GARCH parameters (\alpha\_1 = 0.1244) and (\beta\_1 = 0.8700) are both significant, suggesting the model captures the observed volatility clustering in DJIA returns effectively.
+
+#### Residual Diagnostics
+
+Residual diagnostics are as follows:
+
+-   **Ljung-Box Test**:
+    -   Residuals (\[R\]): (Q(10) = 16.82) (p-value = 0.0786), suggesting no significant autocorrelation in residuals.
+    -   Squared Residuals (\[R\^2\]): (Q(10) = 15.39) (p-value = 0.1184), indicating no remaining ARCH effects.
+
+These tests confirm that the AR(1)-GARCH(1, 1) model adequately captures the conditional heteroskedasticity in the DJIA returns.
+
+#### GARCH Predictions of Volatility
+
+We explored GARCH predictions of volatility, particularly around the financial crisis of 2008. One-step-ahead predictions of volatility ((\sigma\^2)) were plotted along with the observed data, as shown in Figure 5.6. This provides insight into how volatility predictions varied during a period of high market uncertainty.
+
+```{r}
+
+# Assuming `djia` is already loaded with a 'Close' column for DJIA closing prices
+# Calculate daily returns of DJIA
+djiar <- diff(log(djia$Close))[-1]
+
+# Fit the AR(1)-GARCH(1,1) model with t-distributed errors
+djia.g <- garchFit(~ arma(1, 0) + garch(1, 1), data = djiar, cond.dist = "std")
+
+# Extract fitted volatility (sigma) from the GARCH model
+predicted_volatility <- djia.g@sigma.t
+
+# Set up a time series index (assuming `djiar` has time index matching `predicted_volatility`)
+dates <- index(djiar)
+
+# Plot the observed returns and predicted volatility
+plot(dates, djiar, type = "l", col = "blue", ylab = "Returns and Volatility", xlab = "Date", main = "DJIA Returns and GARCH(1,1) Predicted Volatility")
+lines(dates, predicted_volatility, col = "red", lty = 2)
+
+# Add a legend
+legend("topright", legend = c("Observed Returns", "Predicted Volatility (GARCH)"), col = c("blue", "red"), lty = c(1, 2))
+
+```
+
+## APARCH Analysis of the DJIA Returns
+
+### Background
+
+In this example, we apply an AR-APARCH model to the DJIA returns, as discussed in Example 5.5. Similar to the previous example, an AR(1) term is included in the model to account for the conditional mean. We assume that the error process follows an APARCH(1,1) structure with t-distributed errors to capture asymmetry and heavy tails in the return series. The model equation is:
+
+\[ r_t = \mu\_t + y_t \]
+
+where ( \mu\_t ) is an AR(1) component, and ( y_t ) follows an APARCH process with conditional variance modeled as specified in Equation (5.53).
+
+#### Model Fitting and Summary
+
+We use the `fGarch` package in R to fit the AR-APARCH(1,1) model to the DJIA returns. The following code performs the fitting and provides a summary of the estimated parameters:
+
+```{r}
+library(xts)
+library(fGarch)
+
+# Calculate daily returns of DJIA
+djiar <- diff(log(djia$Close))[-1]
+
+# Fit AR(1)-APARCH(1,1) model with t-distributed errors
+djia.ap <- garchFit(~ arma(1, 0) + aparch(1, 1), data = djiar, cond.dist = "std")
+summary(djia.ap)
+```
+
+#### Parameter Estimates
+
+The AR(1) coefficient (\hat{\phi}\_1) is -0.04818, while the APARCH parameters (\alpha\_1), (\beta\_1), and (\delta) indicate the model captures asymmetry and persistence in volatility.
+
+#### Residual Diagnostics
+
+Several tests were performed to check the residuals for independence and normality:
+
+-   **Ljung-Box Test**:
+    -   Residuals (\[R\]): (Q(10) = 15.71), with a p-value of 0.108, suggesting no significant autocorrelation in the residuals.
+    -   Squared Residuals (\[R\^2\]): (Q(10) = 16.87), with a p-value of 0.077, indicating no remaining ARCH effects.
+
+#### Predicted Volatility
+
+The predicted volatility from the APARCH model differs from the GARCH model but displays similar volatility clustering patterns. To compare, we plot the observed returns and the one-step-ahead predicted volatility.
+
+```{r}
+# Plot observed returns and APARCH predicted volatility
+dates <- index(djiar)
+predicted_volatility_aparch <- djia.ap@sigma.t
+
+plot(dates, djiar, type = "l", col = "blue", ylab = "Returns and Volatility", xlab = "Date", main = "DJIA Returns and APARCH(1,1) Predicted Volatility")
+lines(dates, predicted_volatility_aparch, col = "green", lty = 2)
+
+# Add a legend
+legend("topright", legend = c("Observed Returns", "Predicted Volatility (APARCH)"), col = c("blue", "green"), lty = c(1, 2))
+```
+
+This plot compares the daily returns with the APARCH model’s predicted volatility, highlighting volatility clustering in the DJIA returns over time.
