@@ -369,13 +369,13 @@ ar1      -24170.125   -390.266822  1.253879e+04 -6.733789e+00
 omega   4546825.784  12538.791045 -1.590043e+10 -7.069342e+05
 alpha1    -1586.692     -6.733789 -7.069342e+05 -1.425395e+02
 attr(,"time")
-Time difference of 0.004781961 secs
+Time difference of 0.004873753 secs
 
 --- END OF TRACE ---
 
 
 Time to Estimate Parameters:
- Time difference of 0.03493953 secs</code></pre>
+ Time difference of 0.04393435 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -388,7 +388,7 @@ Call:
 
 Mean and Variance Equation:
  data ~ arma(1, 0) + garch(1, 0)
-&lt;environment: 0x55e07c189ca8&gt;
+&lt;environment: 0x55f169b16e90&gt;
  [data = diff(log(gnp))]
 
 Conditional Distribution:
@@ -414,7 +414,7 @@ Log Likelihood:
  722.2849    normalized:  3.253536 
 
 Description:
- Mon Nov 18 14:09:35 2024 by user:  
+ Mon Nov 18 16:04:59 2024 by user:  
 
 
 Standardised Residuals Tests:
@@ -676,13 +676,13 @@ alpha1 -1.832755e+02
 beta1  -2.340762e+02
 shape  -2.547431e+00
 attr(,"time")
-Time difference of 0.06522632 secs
+Time difference of 0.0685904 secs
 
 --- END OF TRACE ---
 
 
 Time to Estimate Parameters:
- Time difference of 0.3765259 secs</code></pre>
+ Time difference of 0.3414211 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(djia.g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -695,7 +695,7 @@ Call:
 
 Mean and Variance Equation:
  data ~ arma(1, 0) + garch(1, 1)
-&lt;environment: 0x55e07ac38830&gt;
+&lt;environment: 0x55f168599750&gt;
  [data = djiar]
 
 Conditional Distribution:
@@ -723,7 +723,7 @@ Log Likelihood:
  8249.619    normalized:  3.27756 
 
 Description:
- Mon Nov 18 14:09:36 2024 by user:  
+ Mon Nov 18 16:05:00 2024 by user:  
 
 
 Standardised Residuals Tests:
@@ -909,13 +909,13 @@ alpha1 -1.832755e+02
 beta1  -2.340762e+02
 shape  -2.547431e+00
 attr(,"time")
-Time difference of 0.06753659 secs
+Time difference of 0.06105161 secs
 
 --- END OF TRACE ---
 
 
 Time to Estimate Parameters:
- Time difference of 0.3646638 secs</code></pre>
+ Time difference of 0.3197961 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract fitted volatility (sigma) from the GARCH model</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>predicted_volatility <span class="ot">&lt;-</span> djia.g<span class="sc">@</span>sigma.t</span>
@@ -1115,13 +1115,13 @@ beta1    -320129.731 -2.153576e+04   -285.455040
 delta     -21535.759 -1.520674e+03    -19.343988
 shape       -285.455 -1.934399e+01     -1.118540
 attr(,"time")
-Time difference of 0.1159267 secs
+Time difference of 0.1125531 secs
 
 --- END OF TRACE ---
 
 
 Time to Estimate Parameters:
- Time difference of 0.5305257 secs</code></pre>
+ Time difference of 0.4962823 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(djia.ap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1135,7 +1135,7 @@ Call:
 
 Mean and Variance Equation:
  data ~ arma(1, 0) + aparch(1, 1)
-&lt;environment: 0x55e079d0bff0&gt;
+&lt;environment: 0x55f1676901e8&gt;
  [data = djiar]
 
 Conditional Distribution:
@@ -1167,7 +1167,7 @@ Log Likelihood:
  8311.583    normalized:  3.302178 
 
 Description:
- Mon Nov 18 14:09:37 2024 by user:  
+ Mon Nov 18 16:05:01 2024 by user:  
 
 
 Standardised Residuals Tests:
