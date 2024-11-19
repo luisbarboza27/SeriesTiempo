@@ -1,0 +1,1162 @@
+---
+title: "Capítulo 6"
+---
+
+# A Biomedical Example
+
+## Introduction
+
+This example examines the monitoring of biomedical markers in a cancer patient following a bone marrow transplant. Measurements are recorded daily for 91 days on three variables: - log(white blood cell count) \[WBC\] - log(platelet count) \[PLT\] - hematocrit \[HCT\]
+
+These markers are represented as a vector ( y_t = (y\_{t1}, y\_{t2}, y\_{t3})' ). Approximately 40% of the data is missing, mainly from day 35 onwards.
+
+## Objective
+
+The primary goals are to: 1. Model the dynamics of the three variables using a state-space approach. 2. Estimate missing values.
+
+Platelet count around 100 days post-transplant is identified as a significant predictor of long-term survival, emphasizing its importance in the analysis.
+
+## Methodology
+
+The state-space model is employed for this analysis. We define the state vector ( x_t ) and the state equation as follows:
+
+$$
+\begin{pmatrix}
+x_{t2} \\
+x_{t1}
+\end{pmatrix}
+= 
+\begin{pmatrix}
+\phi_{21} & \phi_{11} & \phi_{12} \\
+\phi_{32} & \phi_{22} & \phi_{13} \\
+\phi_{33} & \phi_{23} & \phi_{31}
+\end{pmatrix}
+\begin{pmatrix}
+x_{t-1,2} \\
+x_{t-1,1}
+\end{pmatrix} + 
+\begin{pmatrix}
+w_{t2} \\
+w_{t1}
+\end{pmatrix}
+$$
+
+The observation equation for each day depends on whether a blood sample was taken, represented by an observation matrix ( A_t ), which is either the identity matrix or zero. The covariance matrices ( R ) and ( Q ) are each ( 3 \times 3 ) matrices.
+
+## Visualization
+
+To visualize the data (similar to Figure 6.2), we can use the following R code:
+
+```{r}
+library(astsa)
+plot(blood, type='o', pch=19, xlab='day', main='Biomedical Markers Over 91 Days')
+```
+
+# Global Warming
+
+## Introduction
+
+This example explores historical temperature records from 1880 to 2015, focusing on two temperature series: 1. **globtemp**: the global mean land-ocean temperature index. 2. **globtempl**: the surface air temperature index based on meteorological station data only.
+
+Both series aim to represent global temperature trends and, ideally, reflect the same underlying climate signal.
+
+## Objective
+
+The main objective is to extract a consistent, underlying signal of climate change from these two temperature estimators, which are expected to converge on a similar long-term trend in global temperature deviations.
+
+## Data Visualization
+
+A plot comparing the two series provides a visual representation of their alignment and divergence over time. The R code below generates this comparison, with globtemp in one color and globtempl in another:
+
+```{r}
+# Plot of Global Temperature Series Over Time
+ts.plot(gtemp_both, gtemp_land, col=c(6,4), ylab='Temperature Deviations')
+
+```
+
+# Prediction, Filtering, and Smoothing for the Local Level Model
+
+## Introduction
+
+This example demonstrates the application of prediction, filtering, and smoothing to a simulated univariate time series based on the local level model. The series was generated with 50 observations, where we modeled the trend using a random walk and added observational noise.
+
+## Model Description
+
+The local level model consists of: 1. **Trend Component**: $$
+   \mu_t = \mu_{t-1} + w_t
+   $$ where \$ w_t \sim \text{iid}  N(0, 1) \$ and \$ \mu\_0 \sim N(0, 1) \$.
+
+2.  **Observation Equation**: $$
+    y_t = \mu_t + v_t
+    $$ where \$ v_t \sim \text{iid}  N(0, 1) \$.
+
+In this setup, \$ {w_t} \$, \$ {v_t} \$, and \$ \mu\_0 \$ are generated independently.
+
+## Data Generation
+
+The following code generates data for a local level model with 50 observations. We initialize a random walk for the state ( \mu ) and add observational noise to produce the observed series ( y ).
+
+```{r}
+# Generate data
+set.seed(1)
+num <- 50
+w <- rnorm(num + 1, 0, 1)  # process noise
+v <- rnorm(num, 0, 1)      # observation noise
+mu <- cumsum(w)             # state: mu[0], mu[1], ..., mu[50]
+y <- mu[-1] + v             # observations: y[1], ..., y[50]
+```
+
+## Kalman Filter and Smoothing
+
+We use the `Ksmooth` function to apply both filtering and smoothing on the observations.
+
+```{r}
+# Apply Kalman filter and smoother
+ks <- Ksmooth(y, A = 1, mu0 = 0, Sigma0 = 1, Phi = 1, sQ = 1, sR = 1)
+```
+
+## Visualization of Results
+
+The following plots display the results of prediction, filtering, and smoothing. Each plot includes the estimated trend line, with shaded confidence intervals representing the uncertainty bounds.
+
+```{r}
+# Plot setup
+par(mfrow = c(3, 1))
+Time <- 1:num
+
+# Prediction Plot
+plot(Time, mu[-1], main = 'Predict', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')
+lines(ks$Xp, col = 'blue')  # Prediction
+lines(ks$Xp + 2 * sqrt(ks$Pp), lty = 2, col = 4)  # Upper confidence interval
+lines(ks$Xp - 2 * sqrt(ks$Pp), lty = 2, col = 4)  # Lower confidence interval
+
+# Filtering Plot
+plot(Time, mu[-1], main = 'Filter', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')
+lines(ks$Xf, col = 'blue')  # Filtered estimate
+lines(ks$Xf + 2 * sqrt(ks$Pf), lty = 2, col = 4)  # Upper confidence interval
+lines(ks$Xf - 2 * sqrt(ks$Pf), lty = 2, col = 4)  # Lower confidence interval
+
+# Smoothing Plot
+plot(Time, mu[-1], main = 'Smooth', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')
+lines(ks$Xs, col = 'blue')  # Smoothed estimate
+lines(ks$Xs + 2 * sqrt(ks$Ps), lty = 2, col = 4)  # Upper confidence interval
+lines(ks$Xs - 2 * sqrt(ks$Ps), lty = 2, col = 4)  # Lower confidence interval
+```
+
+## Initial State Information
+
+To display the initial value estimates and their uncertainty:
+
+```{r}
+# Initial state information
+initial_mu <- mu[1]
+initial_estimate <- ks$X0n
+initial_uncertainty <- sqrt(ks$P0n)
+
+initial_mu
+initial_estimate
+initial_uncertainty
+```
+
+# Newton-Raphson for AR(1)
+
+Here’s the code in Rmarkdown format:
+
+## Data Generation
+
+This code generates an AR(1) process with 100 observations and adds noise to simulate the observed series ( y ).
+
+```{r}
+# Generate Data
+set.seed(999)
+num <- 100
+x <- arima.sim(n = num + 1, list(ar = 0.8), sd = 1)
+y <- ts(x[-1] + rnorm(num, 0, 1))
+```
+
+## Initial Parameter Estimates
+
+We use lagged values of ( y ) to compute initial estimates for the parameters, including the AR coefficient ( \phi ), process noise variance ( q ), and observation noise variance ( r ).
+
+```{r}
+# Initial Estimates
+u <- ts.intersect(y, lag(y, -1), lag(y, -2))
+varu <- var(u)
+coru <- cor(u)
+phi <- coru[1, 3] / coru[1, 2]
+q <- (1 - phi^2) * varu[1, 2] / phi
+r <- varu[1, 1] - q / (1 - phi^2)
+(init.par <- c(phi, sqrt(q), sqrt(r)))  # Initial parameter estimates: phi, sqrt(q), sqrt(r)
+```
+
+## Likelihood Evaluation Function
+
+The following function `Linn` evaluates the likelihood of the parameters using the Kalman filter. We initialize the Kalman filter with the variance of the process noise and observation noise.
+
+```{r}
+# Function to evaluate the likelihood
+Linn <- function(para) {
+  phi <- para[1]
+  sigw <- para[2]
+  sigv <- para[3]
+  Sigma0 <- (sigw^2) / (1 - phi^2)
+  Sigma0[Sigma0 < 0] <- 0
+  kf <- Kfilter(y, 1, mu0 = 0, Sigma0, phi, sigw, sigv)
+  return(kf$like)
+}
+```
+
+## Parameter Estimation
+
+We use the `optim` function to estimate the parameters by maximizing the likelihood. The standard errors of the estimates are obtained from the inverse of the Hessian matrix.
+
+```{r}
+# Estimation
+(est <- optim(init.par, Linn, gr = NULL, method = 'BFGS', hessian = TRUE,
+              control = list(trace = 1, REPORT = 1)))
+SE <- sqrt(diag(solve(est$hessian)))
+cbind(estimate = c(phi = est$par[1], sigw = est$par[2], sigv = est$par[3]), SE)
+```
+
+The output displays the final parameter estimates along with their standard errors, providing insight into the process and observation noise variances as well as the AR(1) coefficient ( \phi ).
+
+# Kalman Filtering and Smoothing for Global Temperature Series
+
+## Setup
+
+This analysis uses two temperature series, `globtemp` and `globtempl`, to estimate underlying temperature deviations with Kalman filtering and smoothing. Initial parameters for the state-space model are defined below.
+
+```{r}
+# Setup
+y <- cbind(gtemp_both, gtemp_land)
+num <- nrow(y)
+input <- rep(1, num)
+A <- array(rep(1, 2), dim = c(2, 1, num))
+mu0 <- -0.35
+Sigma0 <- 1
+Phi <- 1
+```
+
+## Function to Calculate Likelihood
+
+The `Linn` function calculates the likelihood for given parameters using the Kalman filter.
+
+```{r}
+# Function to Calculate Likelihood
+Linn <- function(para) {
+  cQ <- para[1]           # sigma_w
+  cR1 <- para[2]          # 11 element of chol(R)
+  cR2 <- para[3]          # 22 element of chol(R)
+  cR12 <- para[4]         # 12 element of chol(R)
+  cR <- matrix(c(cR1, 0, cR12, cR2), 2)  # covariance matrix
+  drift <- para[5]
+  kf <- xKfilter1(num,y, A, mu0, Sigma0, Phi, drift, 0, cQ, cR, input)
+  return(kf$like)
+}
+```
+
+## Parameter Estimation
+
+Using the `optim` function, we estimate the parameters by maximizing the likelihood. Standard errors of the estimates are calculated from the inverse of the Hessian matrix.
+
+```{r}
+# Estimation
+init.par <- c(0.1, 0.1, 0.1, 0, 0.05)  # initial parameter values
+(est <- optim(init.par, Linn, NULL, method = 'BFGS', hessian = TRUE,
+              control = list(trace = 1, REPORT = 1)))
+SE <- sqrt(diag(solve(est$hessian)))
+u <- cbind(estimate = est$par, SE)
+rownames(u) <- c('sigw', 'cR11', 'cR22', 'cR12', 'drift')
+u  # Display estimates
+```
+
+## Smoothing
+
+After estimating the parameters, we apply the Kalman smoother to obtain smoothed state estimates and their root mean square error.
+
+```{r}
+# Smooth (set parameters to their final estimates)
+cQ <- est$par[1]
+cR1 <- est$par[2]
+cR2 <- est$par[3]
+cR12 <- est$par[4]
+cR <- matrix(c(cR1, 0, cR12, cR2), 2)
+(R <- t(cR) %*% cR)  # Estimated R matrix
+drift <- est$par[5]
+ks <- xKsmooth1(num, y, A, mu0, Sigma0, Phi, drift, 0, cQ, cR, input)
+```
+
+## Plotting Results
+
+The smoothed state estimates are plotted with a confidence interval, along with the original series for comparison.
+
+```{r}
+# Plot
+xsm <- ts(as.vector(ks$xs), start = 1850)
+rmse <- ts(sqrt(as.vector(ks$Ps)), start = 1850)
+
+plot(xsm, ylim = c(-0.6, 1), ylab = 'Temperature Deviations', main = 'Smoothed Temperature Deviations')
+xx <- c(time(xsm), rev(time(xsm)))
+yy <- c(xsm - 2 * rmse, rev(xsm + 2 * rmse))
+polygon(xx, yy, border = NA, col = gray(0.6, alpha = 0.25))  # Confidence interval
+
+# Original series for comparison
+lines(gtemp_both, type = 'o', pch = 2, col = 4, lty = 6)
+lines(gtemp_land, type = 'o', pch = 3, col = 3, lty = 6)
+```
+
+Here’s an Rmarkdown version summarizing the EM algorithm estimation and associated code:
+
+# EM Algorithm Estimation for AR(1) Model Parameters
+
+## Introduction
+
+Using the same data generated in Example 6.6, we perform an EM algorithm to estimate the parameters ( \phi ), ( \sigma\_w\^2 ), ( \sigma\_v\^2 ), as well as the initial parameters ( \mu\_0 ) and ( \Sigma\_0 ). The EM algorithm converges when the relative change in log likelihood is less than 0.00001, taking 59 iterations in this case. The final estimates and their standard errors are calculated using `fdHess` from the `nlme` package to evaluate the Hessian at the final estimates.
+
+## Load Required Package
+
+To calculate standard errors, we use the `nlme` package for evaluating the Hessian matrix.
+
+```{r}
+# Load nlme package
+library(nlme)
+```
+
+## Data Generation
+
+We generate data for a local level model with an AR(1) process, as in Example 6.6.
+
+```{r}
+# Generate data (same as Example 6.6)
+set.seed(999)
+num <- 100
+x <- arima.sim(n = num + 1, list(ar = 0.8), sd = 1)
+y <- ts(x[-1] + rnorm(num, 0, 1))
+```
+
+## Initial Parameter Estimates
+
+Initial estimates for the parameters are calculated based on lagged values of ( y ).
+
+```{r}
+# Initial Estimates
+u <- ts.intersect(y, lag(y, -1), lag(y, -2))
+varu <- var(u)
+coru <- cor(u)
+phi <- coru[1, 3] / coru[1, 2]
+q <- (1 - phi^2) * varu[1, 2] / phi
+r <- varu[1, 1] - q / (1 - phi^2)
+```
+
+## EM Algorithm Procedure
+
+We use the `EM0` function to run the EM algorithm, specifying the tolerance level and maximum iterations for convergence.
+
+```{r}
+# Run EM algorithm
+em <- EM(y, A = 1, mu0 = 0, Sigma0 = 2.8, Phi = phi, Q = sqrt(q), R = sqrt(r),
+          max.iter = 75, tol = .00001)
+```
+
+## Calculation of Standard Errors
+
+Using `fdHess` from the `nlme` package, we calculate the standard errors based on the Hessian of the log-likelihood at the final parameter estimates.
+
+```{r}
+# Standard Errors using fdHess
+phi <- em$Phi
+cq <- sqrt(em$Q)
+cr <- sqrt(em$R)
+mu0 <- em$mu0
+Sigma0 <- em$Sigma0
+para <- c(phi, cq, cr)
+
+# Define likelihood function
+Linn <- function(para) {
+  kf <- Kfilter(y, 1, mu0, Sigma0, para[1], para[2], para[3])
+  return(kf$like)
+}
+
+# Evaluate Hessian and calculate standard errors
+emhess <- fdHess(para, function(para) Linn(para))
+SE <- sqrt(diag(solve(emhess$Hessian)))
+```
+
+## Summary of Final Estimates
+
+The table below shows the final estimates from the EM algorithm along with their standard errors.
+
+```{r}
+# Display Summary of Estimation
+estimate <- c(para, em$mu0, em$Sigma0)
+SE <- c(SE, NA, NA)  # No standard errors for mu0 and Sigma0
+u <- cbind(estimate, SE)
+rownames(u) <- c('phi', 'sigw', 'sigv', 'mu0', 'Sigma0')
+u  # Display results
+```
+
+# EM Algorithm for Multivariate Biomedical Data (missing data)
+
+## Introduction
+
+This analysis uses the EM algorithm to estimate parameters for a multivariate time series model involving three biomedical markers: **WBC**, **PLT**, and **HCT**. After estimating parameters, we apply a Kalman smoother to obtain smoothed values and their confidence intervals.
+
+## Data Setup
+
+We begin by organizing the observed data into a matrix and setting up an array of observation matrices for the Kalman filter.
+
+```{r}
+# Combine data into a matrix
+y <- cbind(WBC, PLT, HCT)
+num <- nrow(y)
+
+# Create array of observation matrices
+A <- array(0, dim = c(3, 3, num))
+for (k in 1:num) {
+  if (y[k, 1] > 0) A[, , k] <- diag(1, 3)  # Observation matrix if data is available
+}
+```
+
+## Initial Parameter Values
+
+We define the initial values for the state vector, covariance matrices, and model parameters.
+
+```{r}
+# Initial values
+mu0 <- matrix(0, 3, 1)                # Initial state mean vector
+Sigma0 <- diag(c(0.1, 0.1, 1), 3)     # Initial state covariance
+Phi <- diag(1, 3)                     # State transition matrix
+cQ <- diag(c(0.1, 0.1, 1), 3)         # Process noise covariance matrix
+cR <- diag(c(0.1, 0.1, 1), 3)         # Observation noise covariance matrix
+```
+
+## EM Algorithm Procedure
+
+We run the EM algorithm using the `EM1` function, specifying the maximum iterations and tolerance for convergence.
+
+```{r}
+# Run EM algorithm
+em <- xEM1(num, y, A, mu0, Sigma0, Phi, cQ, cR, 100, 0.001)
+```
+
+## Smoothing with Kalman Smoother
+
+Using the estimated parameters from the EM algorithm, we apply the Kalman smoother to obtain smoothed estimates and their uncertainties.
+
+```{r}
+# Apply Kalman smoother
+ks <- xKsmooth1(num, y, A, em$mu0, em$Sigma0, em$Phi, 0, 0, chol(em$Q), chol(em$R), 0)
+
+# Extract smoothed estimates and uncertainties
+y1s <- ks$xs[1, , ]
+y2s <- ks$xs[2, , ]
+y3s <- ks$xs[3, , ]
+p1 <- 2 * sqrt(ks$Ps[1, 1, ])
+p2 <- 2 * sqrt(ks$Ps[2, 2, ])
+p3 <- 2 * sqrt(ks$Ps[3, 3, ])
+```
+
+## Plotting Results
+
+The plots below show the original data for each marker along with the smoothed estimates and 95% confidence intervals.
+
+```{r}
+# Plot smoothed estimates and confidence intervals
+par(mfrow = c(3, 1))
+
+# Plot for WBC
+plot(WBC, type = 'p', pch = 19, ylim = c(1, 5), xlab = 'day', ylab = 'WBC')
+lines(y1s, col = 'blue')  # Smoothed estimate
+lines(y1s + p1, lty = 2, col = 4)  # Upper confidence bound
+lines(y1s - p1, lty = 2, col = 4)  # Lower confidence bound
+
+# Plot for PLT
+plot(PLT, type = 'p', ylim = c(3, 6), pch = 19, xlab = 'day', ylab = 'PLT')
+lines(y2s, col = 'blue')  # Smoothed estimate
+lines(y2s + p2, lty = 2, col = 4)  # Upper confidence bound
+lines(y2s - p2, lty = 2, col = 4)  # Lower confidence bound
+
+# Plot for HCT
+plot(HCT, type = 'p', pch = 19, ylim = c(20, 40), xlab = 'day', ylab = 'HCT')
+lines(y3s, col = 'blue')  # Smoothed estimate
+lines(y3s + p3, lty = 2, col = 4)  # Upper confidence bound
+lines(y3s - p3, lty = 2, col = 4)  # Lower confidence bound
+```
+
+# Structural Models: Parameter Estimation and Smoothing for J&J Time Series
+
+## Introduction
+
+This analysis uses a state-space model to estimate the trend and seasonal components of the Johnson & Johnson (J&J) quarterly earnings per share. The estimation procedure uses the Kalman filter and smoother, and forecasts are generated for the future values. The model parameters are estimated using maximum likelihood and the `optim` function.
+
+## Setup
+
+We start by setting up the observation matrix ( A ), the initial state mean ( \mu\_0 ), and covariance ( \Sigma\_0 ).
+
+```{r}
+# Setup
+num <- length(jj)  # Length of the time series data
+A <- cbind(1, 1, 0, 0)  # Observation matrix
+
+# Initial Parameters
+mu0 <- c(0.7, 0, 0, 0)              # Initial state mean vector
+Sigma0 <- diag(0.04, 4)             # Initial state covariance matrix
+init.par <- c(1.03, 0.1, 0.1, 0.5)  # Initial estimates for parameters
+```
+
+## Likelihood Function
+
+The `Linn` function calculates the likelihood for given parameters using the Kalman filter. It takes the parameters ( \phi ), ( \sigma\_w ) for process noise, and ( \sigma\_v ) for observation noise.
+
+```{r}
+# Function to Calculate Likelihood
+Linn <- function(para) {
+  Phi <- diag(0, 4)
+  Phi[1, 1] <- para[1]
+  Phi[2, ] <- c(0, -1, -1, -1)
+  Phi[3, ] <- c(0, 1, 0, 0)
+  Phi[4, ] <- c(0, 0, 1, 0)
+  
+  cQ1 <- para[2]
+  cQ2 <- para[3]
+  cQ <- diag(0, 4)
+  cQ[1, 1] <- cQ1
+  cQ[2, 2] <- cQ2
+  
+  cR <- para[4]
+  
+  kf <- xKfilter0(num, jj, A, mu0, Sigma0, Phi, cQ, cR)
+  return(kf$like)
+}
+```
+
+## Parameter Estimation
+
+Using the `optim` function, we estimate the parameters by maximizing the likelihood, and calculate standard errors.
+
+```{r}
+# Estimation
+est <- optim(init.par, Linn, NULL, method = 'BFGS', hessian = TRUE,
+             control = list(trace = 1, REPORT = 1))
+SE <- sqrt(diag(solve(est$hessian)))
+u <- cbind(estimate = est$par, SE)
+rownames(u) <- c('Phi11', 'sigw1', 'sigw2', 'sigv')
+u  # Display results
+```
+
+## Smoothing with Kalman Smoother
+
+We apply the Kalman smoother with the estimated parameters to extract the trend and seasonal components.
+
+```{r}
+# Smooth
+Phi <- diag(0, 4)
+Phi[1, 1] <- est$par[1]
+Phi[2, ] <- c(0, -1, -1, -1)
+Phi[3, ] <- c(0, 1, 0, 0)
+Phi[4, ] <- c(0, 0, 1, 0)
+
+cQ1 <- est$par[2]
+cQ2 <- est$par[3]
+cQ <- diag(1, 4)
+cQ[1, 1] <- cQ1
+cQ[2, 2] <- cQ2
+cR <- est$par[4]
+
+ks <- xKsmooth0(num, jj, A, mu0, Sigma0, Phi, cQ, cR)
+
+# Extract trend and seasonal components
+Tsm <- ts(ks$xs[1, , ], start = 1960, freq = 4)
+Ssm <- ts(ks$xs[2, , ], start = 1960, freq = 4)
+p1 <- 3 * sqrt(ks$Ps[1, 1, ])
+p2 <- 3 * sqrt(ks$Ps[2, 2, ])
+```
+
+## Plotting Results
+
+The plots show the trend component and the J&J quarterly earnings per share with the estimated trend and seasonal components.
+
+```{r}
+# Plot trend component and J&J data with confidence intervals
+par(mfrow = c(2, 1))
+
+# Trend component plot
+plot(Tsm, main = 'Trend Component', ylab = 'Trend')
+xx <- c(time(jj), rev(time(jj)))
+yy <- c(Tsm - p1, rev(Tsm + p1))
+polygon(xx, yy, border = NA, col = gray(0.5, alpha = 0.3))
+
+# Data and trend + season plot
+plot(jj, main = 'Data & Trend+Season', ylab = 'J&J QE/Share', ylim = c(-0.5, 17))
+xx <- c(time(jj), rev(time(jj)))
+yy <- c((Tsm + Ssm) - (p1 + p2), rev((Tsm + Ssm) + (p1 + p2)))
+polygon(xx, yy, border = NA, col = gray(0.5, alpha = 0.3))
+```
+
+## Forecasting
+
+The following code generates forecasts for the next 12 quarters, showing the forecast values with confidence intervals.
+
+```{r}
+# Forecast
+n.ahead <- 12
+y <- ts(append(jj, rep(0, n.ahead)), start = 1960, freq = 4)
+rmspe <- rep(0, n.ahead)
+x00 <- ks$xf[ , , num]
+P00 <- ks$Pf[ , , num]
+Q <- t(cQ) %*% cQ
+R <- t(cR) %*% cR
+
+for (m in 1:n.ahead) {
+  xp <- Phi %*% x00
+  Pp <- Phi %*% P00 %*% t(Phi) + Q
+  sig <- A %*% Pp %*% t(A) + R
+  K <- Pp %*% t(A) %*% (1 / sig)
+  x00 <- xp
+  P00 <- Pp - K %*% A %*% Pp
+  y[num + m] <- A %*% xp
+  rmspe[m] <- sqrt(sig)
+}
+
+# Forecast plot
+plot(y, type = 'o', main = '', ylab = 'J&J QE/Share', ylim = c(5, 30),
+     xlim = c(1975, 1984))
+upp <- ts(y[(num + 1):(num + n.ahead)] + 2 * rmspe, start = 1981, freq = 4)
+low <- ts(y[(num + 1):(num + n.ahead)] - 2 * rmspe, start = 1981, freq = 4)
+xx <- c(time(low), rev(time(upp)))
+yy <- c(low, rev(upp))
+polygon(xx, yy, border = 8, col = gray(0.5, alpha = 0.3))
+abline(v = 1981, lty = 3)
+```
+
+# Stochastic Regression
+
+## Introduction
+
+This analysis uses a state-space model to estimate parameters for inflation (`qinfl`) and interest rate (`qintr`) time series data. We use the Kalman filter to estimate the parameters and bootstrap to assess the variability of estimates. The `plyr` package is used to display progress, and `psych` is used for plotting with `scatter.hist`.
+
+## Setup
+
+We define the data and set initial parameters for the model.
+
+```{r}
+# Load necessary libraries
+library(plyr)  # for displaying progress
+library(psych) # for plotting
+
+# Set tolerance and bootstrap parameters
+# tol <- sqrt(.Machine$double.eps)
+# nboot <- 500
+tol <- 0.001
+nboot <- 200
+
+
+# Define data windows for inflation and interest rate
+y <- window(qinfl, c(1953, 1), c(1965, 2))  # Inflation
+z <- window(qintr, c(1953, 1), c(1965, 2))  # Interest rate
+
+# Set up the observation matrix
+num <- length(y)
+A <- array(z, dim = c(1, 1, num))
+input <- matrix(1, num, 1)
+```
+
+## Likelihood Function
+
+The `Linn` function calculates the likelihood for given parameters using the Kalman filter.
+
+```{r}
+# Function to Calculate Likelihood
+Linn <- function(para, y.data) {
+  phi <- para[1]
+  alpha <- para[2]
+  b <- para[3]
+  Ups <- (1 - phi) * b
+  cQ <- para[4]
+  cR <- para[5]
+  
+  kf <- xKfilter2(num, y.data, A, mu0, Sigma0, phi, Ups, alpha, 1, cQ, cR, 0, input)
+  return(kf$like)
+}
+```
+
+## Parameter Estimation
+
+We use the `optim` function to estimate the parameters by maximizing the likelihood.
+
+```{r}
+# Initial values for parameters
+mu0 <- 1
+Sigma0 <- 0.01
+init.par <- c(phi = 0.84, alpha = -0.77, b = 0.85, cQ = 0.12, cR = 1.1)
+
+# Estimate parameters
+est <- optim(init.par, Linn, NULL, y.data = y, method = "BFGS", hessian = TRUE,
+             control = list(trace = 1, REPORT = 1, reltol = tol))
+SE <- sqrt(diag(solve(est$hessian)))
+round(cbind(estimate = est$par, SE), 3)  # Display estimates and standard errors
+```
+
+## Bootstrap Procedure
+
+The bootstrap procedure is used to assess the variability of parameter estimates. The first three observations are fixed, and new residuals are sampled for each bootstrap iteration.
+
+```{r}
+# Run the filter at the estimates
+kf <- xKfilter2(num, y, A, mu0, Sigma0, est$par[1], (1 - est$par[1]) * est$par[3], 
+               est$par[2], 1, est$par[4], est$par[5], 0, input)
+
+# Initialize necessary values for bootstrap
+xp <- kf$xp
+innov <- kf$innov
+sig <- kf$sig
+K <- kf$K
+e <- innov / sqrt(sig)
+e.star <- e
+y.star <- y
+xp.star <- xp
+k <- 4:50  # Hold first 3 observations fixed
+para.star <- matrix(0, nboot, 5)
+init.par <- c(0.84, -0.77, 0.85, 0.12, 1.1)
+
+# Initialize progress display
+pr <- progress_text()
+pr$init(nboot)
+
+for (i in 1:nboot) {
+  pr$step()
+  e.star[k] <- sample(e[k], replace = TRUE)
+  
+  for (j in k) {
+    xp.star[j] <- est$par[1] * xp.star[j - 1] + (1 - est$par[1]) * est$par[3] + 
+                  K[j] * sqrt(sig[j]) * e.star[j]
+  }
+  
+  y.star[k] <- z[k] * xp.star[k] + est$par[2] + sqrt(sig[k]) * e.star[j]
+  est.star <- optim(init.par, Linn, NULL, y.data = y.star, method = "BFGS",
+                    control = list(reltol = tol))
+  
+  para.star[i, ] <- c(est.star$par[1], est.star$par[2], est.star$par[3],
+                      abs(est.star$par[4]), abs(est.star$par[5]))
+}
+```
+
+## Standard Error Calculation from Bootstrap
+
+Standard errors are calculated from the bootstrap replicates.
+
+```{r}
+# Calculate RMSE for bootstrap estimates
+rmse <- rep(NA, 5)
+for (i in 1:5) {
+  rmse[i] <- sqrt(sum((para.star[, i] - est$par[i])^2) / nboot)
+  cat(i, rmse[i], "\n")
+}
+```
+
+## Scatter Plot of Bootstrap Estimates
+
+The `scatter.hist` function from the `psych` package is used to visualize the distribution of the parameter estimates.
+
+```{r}
+# Plot phi and sigw
+phi <- para.star[, 1]
+sigw <- abs(para.star[, 4])
+phi <- ifelse(phi < 0, NA, phi)  # Remove negative phi values for plotting
+
+# Scatter plot with histogram
+# Plot phi and sigw without "panel.first" argument
+# Plot phi and sigw without "col" argument
+
+# (See a better plot in figure 6.10 in the book)
+# scatter.hist(sigw, phi, 
+#              ylab = expression(phi), 
+#              xlab = expression(sigma[~w]),
+#              smooth = FALSE, 
+#              correl = FALSE, 
+#              density = FALSE, 
+#              ellipse = FALSE,
+#              title = '', 
+#              pch = 19, 
+#              cex.lab = 1.2)
+
+
+```
+
+# Hidden Markov Model for Earthquake Counts Using depmixS4
+
+## Introduction
+
+This analysis uses a hidden Markov model (HMM) to model earthquake counts (`EQcount`) with two states. The model assumes Poisson-distributed earthquake counts in each state, and we estimate the transition probabilities and Poisson rate parameters.
+
+## Model Setup and Estimation
+
+We fit a 2-state HMM to the `EQcount` data, using a Poisson distribution for the emission probabilities. The estimated parameters are extracted and adjusted to ensure state 1 has the smaller lambda (intensity parameter).
+
+```{r}
+# Load necessary package
+library(depmixS4)
+
+# Define and fit the model
+model <- depmix(EQcount ~ 1, nstates = 2, data = data.frame(EQcount), family = poisson())
+set.seed(90210)
+summary(fm <- fit(model))
+
+# Get parameters and ensure state 1 has smaller lambda
+u <- as.vector(getpars(fm))
+if (u[7] <= u[8]) {
+  para.mle <- c(u[3:6], exp(u[7]), exp(u[8]))
+} else {
+  para.mle <- c(u[6:3], exp(u[8]), exp(u[7]))
+}
+
+# Transition matrix and lambda values
+mtrans <- matrix(para.mle[1:4], byrow = TRUE, nrow = 2)
+lams <- para.mle[5:6]
+
+# Calculate stationary probabilities
+pi1 <- mtrans[2, 1] / (2 - mtrans[1, 1] - mtrans[2, 2])
+pi2 <- 1 - pi1
+```
+
+## Visualization
+
+We visualize the earthquake counts, the posterior probabilities of being in state 2, and the histogram with fitted Poisson distributions.
+
+```{r}
+# Setup layout for plots
+layout(matrix(c(1, 2, 1, 3), 2))
+par(mar = c(3, 3, 1, 1), mgp = c(1.6, .6, 0))
+
+# Plot EQcount and states
+plot(EQcount, main = "", ylab = 'EQcount', type = 'h', col = gray(0.7))
+text(EQcount, col = 6 * posterior(fm)[, 1] - 2, labels = posterior(fm)[, 1], cex = 0.9)
+
+# Plot probability of state 2
+plot(ts(posterior(fm)[, 3], start = 1900), ylab = expression(hat(pi)[~2]*'(t|n)'))
+abline(h = 0.5, lty = 2)
+
+# Histogram of EQcount with fitted Poisson distributions
+hist(EQcount, breaks = 30, prob = TRUE, main = "")
+xvals <- seq(1, 45)
+u1 <- pi1 * dpois(xvals, lams[1])
+u2 <- pi2 * dpois(xvals, lams[2])
+lines(xvals, u1, col = 4)
+lines(xvals, u2, col = 2)
+```
+
+## Bootstrap Procedure
+
+A bootstrap procedure is used to estimate the standard errors of the parameters by resampling the residuals. We generate bootstrap samples, fit the model to each sample, and store the estimates.
+
+```{r}
+# Function to generate data from Poisson HMM
+pois.HMM.generate_sample <- function(n, m, lambda, Mtrans, StatDist = NULL) {
+  if (is.null(StatDist)) StatDist <- solve(t(diag(m) - Mtrans + 1), rep(1, m))
+  mvect <- 1:m
+  state <- numeric(n)
+  state[1] <- sample(mvect, 1, prob = StatDist)
+  for (i in 2:n) state[i] <- sample(mvect, 1, prob = Mtrans[state[i - 1], ])
+  y <- rpois(n, lambda = lambda[state])
+  list(y = y, state = state)
+}
+
+# Run bootstrap
+set.seed(10101101)
+nboot <- 100
+nobs <- length(EQcount)
+para.star <- matrix(NA, nrow = nboot, ncol = 6)
+for (j in 1:nboot) {
+  x.star <- pois.HMM.generate_sample(n = nobs, m = 2, lambda = lams, Mtrans = mtrans)$y
+  model <- depmix(x.star ~ 1, nstates = 2, data = data.frame(x.star), family = poisson())
+  u <- as.vector(getpars(fit(model, verbose = 0)))
+  if (u[7] <= u[8]) {
+    para.star[j, ] <- c(u[3:6], exp(u[7]), exp(u[8]))
+  } else {
+    para.star[j, ] <- c(u[6:3], exp(u[8]), exp(u[7]))
+  }
+}
+```
+
+## Bootstrapped Standard Errors
+
+Calculate the standard errors of the parameters based on the bootstrap replicates.
+
+```{r}
+# Calculate bootstrapped standard errors
+SE <- sqrt(apply(para.star, 2, var) + (apply(para.star, 2, mean) - para.mle)^2)[c(1, 4:6)]
+names(SE) <- c('seM11/M12', 'seM21/M22', 'seLam1', 'seLam2')
+SE  # Display standard errors
+```
+
+# Hidden Markov Model for S&P500 Weekly Returns.
+
+## Introduction
+
+This analysis fits a 3-state hidden Markov model (HMM) to the S&P500 weekly returns (`sp500w`). The HMM assumes that returns follow a Gaussian distribution in each state. The model is estimated using maximum likelihood, and bootstrap is used to assess parameter variability.
+
+## Model Setup and Estimation
+
+We define and fit a 3-state HMM using the `depmixS4` package.
+
+```{r}
+# Prepare the data
+y <- ts(sp500w, start = 2003, freq = 52)
+
+# Define and fit the model
+mod3 <- depmix(y ~ 1, nstates = 3, data = data.frame(y))
+set.seed(2)
+summary(fm3 <- fit(mod3))
+```
+
+## Parameter Estimates
+
+We extract and adjust the parameter estimates to handle potential label-switching issues.
+
+```{r}
+# Extract maximum likelihood estimates (MLEs)
+para.mle <- as.vector(getpars(fm3)[-(1:3)])
+permu <- matrix(c(0, 0, 1, 0, 1, 0, 1, 0, 0), 3, 3)  # Adjust for label-switching
+
+# Transition matrix and Gaussian parameters
+mtrans.mle <- permu %*% round(t(matrix(para.mle[1:9], 3, 3)), 3) %*% permu
+norms.mle <- round(matrix(para.mle[10:15], 2, 3), 3) %*% permu
+```
+
+## Visualization
+
+We visualize the returns and their posterior probabilities, as well as the autocorrelation and histogram with Gaussian fits for each state.
+
+```{r}
+# Plot setup
+layout(matrix(c(1, 2, 1, 3), 2), heights = c(1, 0.75))
+par(mar = c(2.5, 2.5, 0.5, 0.5), mgp = c(1.6, 0.6, 0))
+
+# Plot returns and posterior probabilities
+plot(y, main = "", ylab = 'S&P500 Weekly Returns', col = gray(0.7), ylim = c(-0.11, 0.11))
+culer <- 4 - posterior(fm3)[, 1]
+culer[culer == 3] <- 4  # Switch labels for state 1 and 3
+text(y, col = culer, labels = 4 - posterior(fm3)[, 1])
+
+# Plot autocorrelation of squared returns
+acf(y^2, xlim = c(0.02, 0.5), ylim = c(-0.09, 0.5), panel.first = grid(lty = 2))
+
+# Histogram of returns with Gaussian fits
+hist(y, 25, prob = TRUE, main = "")
+culer <- c(1, 2, 4)
+pi.hat <- colSums(posterior(fm3)[-1, 2:4]) / length(y)
+
+for (i in 1:3) {
+  mu <- norms.mle[1, i]
+  sig <- norms.mle[2, i]
+  x <- seq(-0.15, 0.12, by = 0.001)
+  lines(x, pi.hat[4 - i] * dnorm(x, mean = mu, sd = sig), col = culer[i])
+}
+```
+
+## Bootstrap Procedure
+
+We use a bootstrap procedure to assess the variability of the parameter estimates by simulating data from the fitted model and re-estimating parameters.
+
+```{r}
+# Bootstrap setup
+set.seed(666)
+n.obs <- length(y)
+n.boot <- 100
+para.star <- matrix(NA, nrow = n.boot, ncol = 15)
+respst <- para.mle[10:15]
+trst <- para.mle[1:9]
+
+# Run bootstrap
+for (nb in 1:n.boot) {
+  mod <- simulate(mod3)
+  y.star <- as.vector(mod@response[[1]][[1]]@y)
+  dfy <- data.frame(y.star)
+  mod.star <- depmix(y.star ~ 1, data = dfy, respst = respst, trst = trst, nst = 3)
+  fm.star <- fit(mod.star, emcontrol = em.control(tol = 1e-5), verbose = FALSE)
+  para.star[nb, ] <- as.vector(getpars(fm.star)[-(1:3)])
+}
+```
+
+## Bootstrap Standard Errors
+
+We calculate standard errors for the transition probabilities and Gaussian parameters based on the bootstrap replicates.
+
+```{r}
+# Calculate bootstrap standard errors
+SE <- sqrt(apply(para.star, 2, var) + (apply(para.star, 2, mean) - para.mle)^2)
+
+# Adjust for label-switching
+SE.mtrans.mle <- permu %*% round(t(matrix(SE[1:9], 3, 3)), 3) %*% permu
+SE.norms.mle <- round(matrix(SE[10:15], 2, 3), 3) %*% permu
+
+# Display results
+SE.mtrans.mle
+SE.norms.mle
+```
+
+# Influenza Regime-Switching Model
+
+## Introduction
+
+This analysis models influenza counts (`flu`) using a regime-switching Kalman filter. The model identifies two regimes: normal and epidemic, with different observation matrices. The parameters are estimated using maximum likelihood, and the results include regime probabilities and predictions.
+
+## Data Setup and Initialization
+
+We define the influenza data, number of states, and initial matrices for filtering and prediction.
+
+```{r}
+# Prepare data and initialize matrices
+y <- as.matrix(flu)
+num <- length(y)
+nstate <- 4
+
+# Observation matrices
+M1 <- as.matrix(cbind(1, 0, 0, 1))  # Normal
+M2 <- as.matrix(cbind(1, 0, 1, 1))  # Epidemic
+
+# Initialize storage for probabilities and filters
+prob <- matrix(0, num, 1)
+yp <- y  # Store predictions
+xfilter <- array(0, dim = c(nstate, 1, num))  # Store filtered states
+```
+
+## Likelihood Function
+
+The `Linn` function calculates the log-likelihood using the Kalman filter for a regime-switching model.
+
+```{r}
+# Define likelihood function
+Linn <- function(para) {
+  alpha1 <- para[1]
+  alpha2 <- para[2]
+  beta0 <- para[3]
+  sQ1 <- para[4]
+  sQ2 <- para[5]
+  like <- 0
+
+  # Initial filter and prediction
+  xf <- matrix(0, nstate, 1)
+  Pf <- diag(0.1, nstate)  # Filter covariance
+  Pp <- diag(0.1, nstate)  # Prediction covariance
+  phi <- matrix(0, nstate, nstate)
+  phi[1, 1] <- alpha1
+  phi[1, 2] <- alpha2
+  phi[2, 1] <- 1
+  phi[4, 4] <- 1
+
+  Ups <- as.matrix(rbind(0, 0, beta0, 0))
+  Q <- matrix(0, nstate, nstate)
+  Q[1, 1] <- sQ1^2
+  Q[3, 3] <- sQ2^2
+
+  # Transition probabilities
+  pi11 <- 0.75
+  pi12 <- 0.25
+  pi21 <- 0.25
+  pi22 <- 0.75
+  pif1 <- 0.5
+  pif2 <- 0.5
+
+  # Begin filtering
+  for (i in 1:num) {
+    # Prediction step
+    xp <- phi %*% xf + Ups
+    Pp <- phi %*% Pf %*% t(phi) + Q
+
+    # Calculate likelihood for each regime
+    sig1 <- as.numeric(M1 %*% Pp %*% t(M1))
+    sig2 <- as.numeric(M2 %*% Pp %*% t(M2))
+    k1 <- Pp %*% t(M1) / sig1
+    k2 <- Pp %*% t(M2) / sig2
+    e1 <- y[i] - M1 %*% xp
+    e2 <- y[i] - M2 %*% xp
+
+    den1 <- (1 / sqrt(sig1)) * exp(-0.5 * e1^2 / sig1)
+    den2 <- (1 / sqrt(sig2)) * exp(-0.5 * e2^2 / sig2)
+
+    pip1 <- pif1 * pi11 + pif2 * pi21
+    pip2 <- pif1 * pi12 + pif2 * pi22
+    pif1 <- pip1 * den1 / (pip1 * den1 + pip2 * den2)
+    pif2 <- pip2 * den2 / (pip1 * den1 + pip2 * den2)
+
+    # Update state
+    pif1 <- as.numeric(pif1)
+    pif2 <- as.numeric(pif2)
+    e1 <- as.numeric(e1)
+    e2 <- as.numeric(e2)
+    
+    xf <- xp + pif1 * k1 * e1 + pif2 * k2 * e2
+    Pf <- pif1 * (diag(1, nstate) - k1 %*% M1) %*% Pp +
+          pif2 * (diag(1, nstate) - k2 %*% M2) %*% Pp
+    like <- like - log(pip1 * den1 + pip2 * den2)
+
+    prob[i] <<- pip2
+    xfilter[, , i] <<- xf
+    yp[i] <<- ifelse(pip1 > pip2, M1 %*% xp, M2 %*% xp)
+  }
+  return(like)
+}
+```
+
+## Parameter Estimation
+
+We estimate the parameters using the `optim` function.
+
+```{r}
+# Initial parameters
+init.par <- c(alpha1 = 1.4, alpha2 = -0.5, beta0 = 0.3, sQ1 = 0.1, sQ2 = 0.1)
+
+# Perform optimization
+est <- optim(init.par, Linn, NULL, method = "BFGS", hessian = TRUE, control = list(trace = 1, REPORT = 1))
+SE <- sqrt(diag(solve(est$hessian)))
+
+# Display estimates and standard errors
+u <- cbind(estimate = est$par, SE)
+rownames(u) <- c('alpha1', 'alpha2', 'beta0', 'sQ1', 'sQ2')
+u
+```
+
+## Visualization
+
+The plots below show the observed influenza counts, the filtered states, and the predicted counts with confidence intervals.
+
+```{r}
+# Graphics setup
+predepi <- ifelse(prob < 0.5, 0, 1)
+k <- 6:length(y)
+Time <- time(flu)[k]
+regime <- predepi[k] + 1
+
+par(mfrow = c(3, 1), mar = c(2, 3, 1, 1) + 0.1)
+
+# Plot (a): Observed data and regimes
+plot(Time, y[k], type = "n", ylab = "")
+grid(lty = 2)
+lines(Time, y[k], col = gray(0.7))
+text(Time, y[k], col = regime, labels = regime, cex = 1.1)
+text(1979, 0.95, "(a)")
+
+# Plot (b): Filtered states
+plot(Time, xfilter[1, , k], type = "n", ylim = c(-0.1, 0.4), ylab = "")
+grid(lty = 2)
+lines(Time, xfilter[1, , k])
+lines(Time, xfilter[3, , k])
+lines(Time, xfilter[4, , k])
+text(1979, 0.35, "(b)")
+
+# Plot (c): Predictions with confidence intervals
+plot(Time, y[k], type = "n", ylim = c(0.1, 0.9), ylab = "")
+grid(lty = 2)
+points(Time, y[k], pch = 19)
+
+# Bug in book's code 
+# prde1 <- 2 * sqrt(innov.sig[1])
+# prde2 <- 2 * sqrt(innov.sig[2])
+# prde <- ifelse(predepi[k] < 0.5, prde1, prde2)
+# 
+# xx <- c(Time, rev(Time))
+# yy <- c(yp[k] - prde, rev(yp[k] + prde))
+# polygon(xx, yy, border = 8, col = gray(0.6, alpha = 0.3))
+# text(1979, 0.85, "(c)")
+```

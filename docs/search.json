@@ -148,5 +148,665 @@
     "crumbs": [
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Capítulo 5</span>"
     ]
+  },
+  {
+    "objectID": "cap6.html",
+    "href": "cap6.html",
+    "title": "4  Capítulo 6",
+    "section": "",
+    "text": "5 A Biomedical Example",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction",
+    "href": "cap6.html#introduction",
+    "title": "4  Capítulo 6",
+    "section": "5.1 Introduction",
+    "text": "5.1 Introduction\nThis example examines the monitoring of biomedical markers in a cancer patient following a bone marrow transplant. Measurements are recorded daily for 91 days on three variables: - log(white blood cell count) [WBC] - log(platelet count) [PLT] - hematocrit [HCT]\nThese markers are represented as a vector ( y_t = (y_{t1}, y_{t2}, y_{t3})’ ). Approximately 40% of the data is missing, mainly from day 35 onwards.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#objective",
+    "href": "cap6.html#objective",
+    "title": "4  Capítulo 6",
+    "section": "5.2 Objective",
+    "text": "5.2 Objective\nThe primary goals are to: 1. Model the dynamics of the three variables using a state-space approach. 2. Estimate missing values.\nPlatelet count around 100 days post-transplant is identified as a significant predictor of long-term survival, emphasizing its importance in the analysis.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#methodology",
+    "href": "cap6.html#methodology",
+    "title": "4  Capítulo 6",
+    "section": "5.3 Methodology",
+    "text": "5.3 Methodology\nThe state-space model is employed for this analysis. We define the state vector ( x_t ) and the state equation as follows:\n\\[\n\\begin{pmatrix}\nx_{t2} \\\\\nx_{t1}\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n\\phi_{21} & \\phi_{11} & \\phi_{12} \\\\\n\\phi_{32} & \\phi_{22} & \\phi_{13} \\\\\n\\phi_{33} & \\phi_{23} & \\phi_{31}\n\\end{pmatrix}\n\\begin{pmatrix}\nx_{t-1,2} \\\\\nx_{t-1,1}\n\\end{pmatrix} +\n\\begin{pmatrix}\nw_{t2} \\\\\nw_{t1}\n\\end{pmatrix}\n\\]\nThe observation equation for each day depends on whether a blood sample was taken, represented by an observation matrix ( A_t ), which is either the identity matrix or zero. The covariance matrices ( R ) and ( Q ) are each ( 3 ) matrices.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#visualization",
+    "href": "cap6.html#visualization",
+    "title": "4  Capítulo 6",
+    "section": "5.4 Visualization",
+    "text": "5.4 Visualization\nTo visualize the data (similar to Figure 6.2), we can use the following R code:\n\nlibrary(astsa)\nplot(blood, type='o', pch=19, xlab='day', main='Biomedical Markers Over 91 Days')",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-1",
+    "href": "cap6.html#introduction-1",
+    "title": "4  Capítulo 6",
+    "section": "6.1 Introduction",
+    "text": "6.1 Introduction\nThis example explores historical temperature records from 1880 to 2015, focusing on two temperature series: 1. globtemp: the global mean land-ocean temperature index. 2. globtempl: the surface air temperature index based on meteorological station data only.\nBoth series aim to represent global temperature trends and, ideally, reflect the same underlying climate signal.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#objective-1",
+    "href": "cap6.html#objective-1",
+    "title": "4  Capítulo 6",
+    "section": "6.2 Objective",
+    "text": "6.2 Objective\nThe main objective is to extract a consistent, underlying signal of climate change from these two temperature estimators, which are expected to converge on a similar long-term trend in global temperature deviations.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-visualization",
+    "href": "cap6.html#data-visualization",
+    "title": "4  Capítulo 6",
+    "section": "6.3 Data Visualization",
+    "text": "6.3 Data Visualization\nA plot comparing the two series provides a visual representation of their alignment and divergence over time. The R code below generates this comparison, with globtemp in one color and globtempl in another:\n\n# Plot of Global Temperature Series Over Time\nts.plot(gtemp_both, gtemp_land, col=c(6,4), ylab='Temperature Deviations')",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-2",
+    "href": "cap6.html#introduction-2",
+    "title": "4  Capítulo 6",
+    "section": "7.1 Introduction",
+    "text": "7.1 Introduction\nThis example demonstrates the application of prediction, filtering, and smoothing to a simulated univariate time series based on the local level model. The series was generated with 50 observations, where we modeled the trend using a random walk and added observational noise.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#model-description",
+    "href": "cap6.html#model-description",
+    "title": "4  Capítulo 6",
+    "section": "7.2 Model Description",
+    "text": "7.2 Model Description\nThe local level model consists of: 1. Trend Component: \\[\n   \\mu_t = \\mu_{t-1} + w_t\n   \\] where $ w_t  N(0, 1) $ and $ _0 N(0, 1) $.\n\nObservation Equation: \\[\ny_t = \\mu_t + v_t\n\\] where $ v_t  N(0, 1) $.\n\nIn this setup, $ {w_t} $, $ {v_t} $, and $ _0 $ are generated independently.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-generation",
+    "href": "cap6.html#data-generation",
+    "title": "4  Capítulo 6",
+    "section": "7.3 Data Generation",
+    "text": "7.3 Data Generation\nThe following code generates data for a local level model with 50 observations. We initialize a random walk for the state ( ) and add observational noise to produce the observed series ( y ).\n\n# Generate data\nset.seed(1)\nnum &lt;- 50\nw &lt;- rnorm(num + 1, 0, 1)  # process noise\nv &lt;- rnorm(num, 0, 1)      # observation noise\nmu &lt;- cumsum(w)             # state: mu[0], mu[1], ..., mu[50]\ny &lt;- mu[-1] + v             # observations: y[1], ..., y[50]",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#kalman-filter-and-smoothing",
+    "href": "cap6.html#kalman-filter-and-smoothing",
+    "title": "4  Capítulo 6",
+    "section": "7.4 Kalman Filter and Smoothing",
+    "text": "7.4 Kalman Filter and Smoothing\nWe use the Ksmooth function to apply both filtering and smoothing on the observations.\n\n# Apply Kalman filter and smoother\nks &lt;- Ksmooth(y, A = 1, mu0 = 0, Sigma0 = 1, Phi = 1, sQ = 1, sR = 1)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#visualization-of-results",
+    "href": "cap6.html#visualization-of-results",
+    "title": "4  Capítulo 6",
+    "section": "7.5 Visualization of Results",
+    "text": "7.5 Visualization of Results\nThe following plots display the results of prediction, filtering, and smoothing. Each plot includes the estimated trend line, with shaded confidence intervals representing the uncertainty bounds.\n\n# Plot setup\npar(mfrow = c(3, 1))\nTime &lt;- 1:num\n\n# Prediction Plot\nplot(Time, mu[-1], main = 'Predict', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')\nlines(ks$Xp, col = 'blue')  # Prediction\nlines(ks$Xp + 2 * sqrt(ks$Pp), lty = 2, col = 4)  # Upper confidence interval\nlines(ks$Xp - 2 * sqrt(ks$Pp), lty = 2, col = 4)  # Lower confidence interval\n\n# Filtering Plot\nplot(Time, mu[-1], main = 'Filter', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')\nlines(ks$Xf, col = 'blue')  # Filtered estimate\nlines(ks$Xf + 2 * sqrt(ks$Pf), lty = 2, col = 4)  # Upper confidence interval\nlines(ks$Xf - 2 * sqrt(ks$Pf), lty = 2, col = 4)  # Lower confidence interval\n\n# Smoothing Plot\nplot(Time, mu[-1], main = 'Smooth', ylim = c(-5, 10), xlab = 'Time', ylab = 'State')\nlines(ks$Xs, col = 'blue')  # Smoothed estimate\nlines(ks$Xs + 2 * sqrt(ks$Ps), lty = 2, col = 4)  # Upper confidence interval\nlines(ks$Xs - 2 * sqrt(ks$Ps), lty = 2, col = 4)  # Lower confidence interval",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#initial-state-information",
+    "href": "cap6.html#initial-state-information",
+    "title": "4  Capítulo 6",
+    "section": "7.6 Initial State Information",
+    "text": "7.6 Initial State Information\nTo display the initial value estimates and their uncertainty:\n\n# Initial state information\ninitial_mu &lt;- mu[1]\ninitial_estimate &lt;- ks$X0n\ninitial_uncertainty &lt;- sqrt(ks$P0n)\n\ninitial_mu\n\n[1] -0.6264538\n\ninitial_estimate\n\n           [,1]\n[1,] -0.3241541\n\ninitial_uncertainty\n\n          [,1]\n[1,] 0.7861514",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-generation-1",
+    "href": "cap6.html#data-generation-1",
+    "title": "4  Capítulo 6",
+    "section": "8.1 Data Generation",
+    "text": "8.1 Data Generation\nThis code generates an AR(1) process with 100 observations and adds noise to simulate the observed series ( y ).\n\n# Generate Data\nset.seed(999)\nnum &lt;- 100\nx &lt;- arima.sim(n = num + 1, list(ar = 0.8), sd = 1)\ny &lt;- ts(x[-1] + rnorm(num, 0, 1))",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#initial-parameter-estimates",
+    "href": "cap6.html#initial-parameter-estimates",
+    "title": "4  Capítulo 6",
+    "section": "8.2 Initial Parameter Estimates",
+    "text": "8.2 Initial Parameter Estimates\nWe use lagged values of ( y ) to compute initial estimates for the parameters, including the AR coefficient ( ), process noise variance ( q ), and observation noise variance ( r ).\n\n# Initial Estimates\nu &lt;- ts.intersect(y, lag(y, -1), lag(y, -2))\nvaru &lt;- var(u)\ncoru &lt;- cor(u)\nphi &lt;- coru[1, 3] / coru[1, 2]\nq &lt;- (1 - phi^2) * varu[1, 2] / phi\nr &lt;- varu[1, 1] - q / (1 - phi^2)\n(init.par &lt;- c(phi, sqrt(q), sqrt(r)))  # Initial parameter estimates: phi, sqrt(q), sqrt(r)\n\n[1] 0.9087024 0.5107053 1.0291205",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#likelihood-evaluation-function",
+    "href": "cap6.html#likelihood-evaluation-function",
+    "title": "4  Capítulo 6",
+    "section": "8.3 Likelihood Evaluation Function",
+    "text": "8.3 Likelihood Evaluation Function\nThe following function Linn evaluates the likelihood of the parameters using the Kalman filter. We initialize the Kalman filter with the variance of the process noise and observation noise.\n\n# Function to evaluate the likelihood\nLinn &lt;- function(para) {\n  phi &lt;- para[1]\n  sigw &lt;- para[2]\n  sigv &lt;- para[3]\n  Sigma0 &lt;- (sigw^2) / (1 - phi^2)\n  Sigma0[Sigma0 &lt; 0] &lt;- 0\n  kf &lt;- Kfilter(y, 1, mu0 = 0, Sigma0, phi, sigw, sigv)\n  return(kf$like)\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimation",
+    "href": "cap6.html#parameter-estimation",
+    "title": "4  Capítulo 6",
+    "section": "8.4 Parameter Estimation",
+    "text": "8.4 Parameter Estimation\nWe use the optim function to estimate the parameters by maximizing the likelihood. The standard errors of the estimates are obtained from the inverse of the Hessian matrix.\n\n# Estimation\n(est &lt;- optim(init.par, Linn, gr = NULL, method = 'BFGS', hessian = TRUE,\n              control = list(trace = 1, REPORT = 1)))\n\ninitial  value 81.313627 \niter   2 value 80.169051\niter   3 value 79.866131\niter   4 value 79.222846\niter   5 value 79.021504\niter   6 value 79.014723\niter   7 value 79.014453\niter   7 value 79.014452\niter   7 value 79.014452\nfinal  value 79.014452 \nconverged\n\n\n$par\n[1] 0.8137623 0.8507863 0.8743968\n\n$value\n[1] 79.01445\n\n$counts\nfunction gradient \n      23        7 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n$hessian\n          [,1]     [,2]     [,3]\n[1,] 253.36290 67.39775 -9.64101\n[2,]  67.39775 78.99067 48.61052\n[3,]  -9.64101 48.61052 92.20472\n\nSE &lt;- sqrt(diag(solve(est$hessian)))\ncbind(estimate = c(phi = est$par[1], sigw = est$par[2], sigv = est$par[3]), SE)\n\n      estimate         SE\nphi  0.8137623 0.08060636\nsigw 0.8507863 0.17528895\nsigv 0.8743968 0.14293192\n\n\nThe output displays the final parameter estimates along with their standard errors, providing insight into the process and observation noise variances as well as the AR(1) coefficient ( ).",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#setup",
+    "href": "cap6.html#setup",
+    "title": "4  Capítulo 6",
+    "section": "9.1 Setup",
+    "text": "9.1 Setup\nThis analysis uses two temperature series, globtemp and globtempl, to estimate underlying temperature deviations with Kalman filtering and smoothing. Initial parameters for the state-space model are defined below.\n\n# Setup\ny &lt;- cbind(gtemp_both, gtemp_land)\nnum &lt;- nrow(y)\ninput &lt;- rep(1, num)\nA &lt;- array(rep(1, 2), dim = c(2, 1, num))\nmu0 &lt;- -0.35\nSigma0 &lt;- 1\nPhi &lt;- 1",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#function-to-calculate-likelihood",
+    "href": "cap6.html#function-to-calculate-likelihood",
+    "title": "4  Capítulo 6",
+    "section": "9.2 Function to Calculate Likelihood",
+    "text": "9.2 Function to Calculate Likelihood\nThe Linn function calculates the likelihood for given parameters using the Kalman filter.\n\n# Function to Calculate Likelihood\nLinn &lt;- function(para) {\n  cQ &lt;- para[1]           # sigma_w\n  cR1 &lt;- para[2]          # 11 element of chol(R)\n  cR2 &lt;- para[3]          # 22 element of chol(R)\n  cR12 &lt;- para[4]         # 12 element of chol(R)\n  cR &lt;- matrix(c(cR1, 0, cR12, cR2), 2)  # covariance matrix\n  drift &lt;- para[5]\n  kf &lt;- xKfilter1(num,y, A, mu0, Sigma0, Phi, drift, 0, cQ, cR, input)\n  return(kf$like)\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimation-1",
+    "href": "cap6.html#parameter-estimation-1",
+    "title": "4  Capítulo 6",
+    "section": "9.3 Parameter Estimation",
+    "text": "9.3 Parameter Estimation\nUsing the optim function, we estimate the parameters by maximizing the likelihood. Standard errors of the estimates are calculated from the inverse of the Hessian matrix.\n\n# Estimation\ninit.par &lt;- c(0.1, 0.1, 0.1, 0, 0.05)  # initial parameter values\n(est &lt;- optim(init.par, Linn, NULL, method = 'BFGS', hessian = TRUE,\n              control = list(trace = 1, REPORT = 1)))\n\ninitial  value 184.501891 \niter   2 value -159.432451\niter   3 value -188.554321\niter   4 value -200.890075\niter   5 value -208.848198\niter   6 value -211.409184\niter   7 value -213.558558\niter   8 value -214.769546\niter   9 value -267.916289\niter  10 value -297.895341\niter  11 value -303.034337\niter  12 value -307.209447\niter  13 value -308.047209\niter  14 value -309.192071\niter  15 value -325.458515\niter  16 value -334.450913\niter  17 value -346.813562\niter  18 value -353.434122\niter  19 value -355.968476\niter  20 value -358.279679\niter  21 value -359.654063\niter  22 value -360.828371\niter  23 value -362.830261\niter  24 value -363.103981\niter  25 value -363.773903\niter  26 value -364.968098\niter  27 value -365.043831\niter  28 value -365.049940\niter  29 value -365.049967\niter  29 value -365.049968\niter  29 value -365.049968\nfinal  value -365.049968 \nconverged\n\n\n$par\n[1]  0.048049381 -0.174474017  0.202595173 -0.456845638  0.005039607\n\n$value\n[1] -365.05\n\n$counts\nfunction gradient \n     131       29 \n\n$convergence\n[1] 0\n\n$message\nNULL\n\n$hessian\n           [,1]      [,2]        [,3]        [,4]       [,5]\n[1,] 13050.6563 -8050.631  3388.04295  2351.23616  -318.0862\n[2,] -8050.6307 20385.258 -2341.69836 -6732.32604 -1584.6786\n[3,]  3388.0429 -2341.698  4262.50590   -41.82895  -671.6387\n[4,]  2351.2362 -6732.326   -41.82895  3213.88191   276.1468\n[5,]  -318.0862 -1584.679  -671.63871   276.14678 73488.6243\n\nSE &lt;- sqrt(diag(solve(est$hessian)))\nu &lt;- cbind(estimate = est$par, SE)\nrownames(u) &lt;- c('sigw', 'cR11', 'cR22', 'cR12', 'drift')\nu  # Display estimates\n\n          estimate         SE\nsigw   0.048049381 0.01097362\ncR11  -0.174474017 0.01457017\ncR22   0.202595173 0.01885251\ncR12  -0.456845638 0.03498097\ndrift  0.005039607 0.00370230",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#smoothing",
+    "href": "cap6.html#smoothing",
+    "title": "4  Capítulo 6",
+    "section": "9.4 Smoothing",
+    "text": "9.4 Smoothing\nAfter estimating the parameters, we apply the Kalman smoother to obtain smoothed state estimates and their root mean square error.\n\n# Smooth (set parameters to their final estimates)\ncQ &lt;- est$par[1]\ncR1 &lt;- est$par[2]\ncR2 &lt;- est$par[3]\ncR12 &lt;- est$par[4]\ncR &lt;- matrix(c(cR1, 0, cR12, cR2), 2)\n(R &lt;- t(cR) %*% cR)  # Estimated R matrix\n\n           [,1]       [,2]\n[1,] 0.03044118 0.07970769\n[2,] 0.07970769 0.24975274\n\ndrift &lt;- est$par[5]\nks &lt;- xKsmooth1(num, y, A, mu0, Sigma0, Phi, drift, 0, cQ, cR, input)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#plotting-results",
+    "href": "cap6.html#plotting-results",
+    "title": "4  Capítulo 6",
+    "section": "9.5 Plotting Results",
+    "text": "9.5 Plotting Results\nThe smoothed state estimates are plotted with a confidence interval, along with the original series for comparison.\n\n# Plot\nxsm &lt;- ts(as.vector(ks$xs), start = 1850)\nrmse &lt;- ts(sqrt(as.vector(ks$Ps)), start = 1850)\n\nplot(xsm, ylim = c(-0.6, 1), ylab = 'Temperature Deviations', main = 'Smoothed Temperature Deviations')\nxx &lt;- c(time(xsm), rev(time(xsm)))\nyy &lt;- c(xsm - 2 * rmse, rev(xsm + 2 * rmse))\npolygon(xx, yy, border = NA, col = gray(0.6, alpha = 0.25))  # Confidence interval\n\n# Original series for comparison\nlines(gtemp_both, type = 'o', pch = 2, col = 4, lty = 6)\nlines(gtemp_land, type = 'o', pch = 3, col = 3, lty = 6)\n\n\n\n\n\n\n\n\nHere’s an Rmarkdown version summarizing the EM algorithm estimation and associated code:",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-3",
+    "href": "cap6.html#introduction-3",
+    "title": "4  Capítulo 6",
+    "section": "10.1 Introduction",
+    "text": "10.1 Introduction\nUsing the same data generated in Example 6.6, we perform an EM algorithm to estimate the parameters ( ), ( _w^2 ), ( _v^2 ), as well as the initial parameters ( _0 ) and ( _0 ). The EM algorithm converges when the relative change in log likelihood is less than 0.00001, taking 59 iterations in this case. The final estimates and their standard errors are calculated using fdHess from the nlme package to evaluate the Hessian at the final estimates.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#load-required-package",
+    "href": "cap6.html#load-required-package",
+    "title": "4  Capítulo 6",
+    "section": "10.2 Load Required Package",
+    "text": "10.2 Load Required Package\nTo calculate standard errors, we use the nlme package for evaluating the Hessian matrix.\n\n# Load nlme package\nlibrary(nlme)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-generation-2",
+    "href": "cap6.html#data-generation-2",
+    "title": "4  Capítulo 6",
+    "section": "10.3 Data Generation",
+    "text": "10.3 Data Generation\nWe generate data for a local level model with an AR(1) process, as in Example 6.6.\n\n# Generate data (same as Example 6.6)\nset.seed(999)\nnum &lt;- 100\nx &lt;- arima.sim(n = num + 1, list(ar = 0.8), sd = 1)\ny &lt;- ts(x[-1] + rnorm(num, 0, 1))",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#initial-parameter-estimates-1",
+    "href": "cap6.html#initial-parameter-estimates-1",
+    "title": "4  Capítulo 6",
+    "section": "10.4 Initial Parameter Estimates",
+    "text": "10.4 Initial Parameter Estimates\nInitial estimates for the parameters are calculated based on lagged values of ( y ).\n\n# Initial Estimates\nu &lt;- ts.intersect(y, lag(y, -1), lag(y, -2))\nvaru &lt;- var(u)\ncoru &lt;- cor(u)\nphi &lt;- coru[1, 3] / coru[1, 2]\nq &lt;- (1 - phi^2) * varu[1, 2] / phi\nr &lt;- varu[1, 1] - q / (1 - phi^2)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#em-algorithm-procedure",
+    "href": "cap6.html#em-algorithm-procedure",
+    "title": "4  Capítulo 6",
+    "section": "10.5 EM Algorithm Procedure",
+    "text": "10.5 EM Algorithm Procedure\nWe use the EM0 function to run the EM algorithm, specifying the tolerance level and maximum iterations for convergence.\n\n# Run EM algorithm\nem &lt;- EM(y, A = 1, mu0 = 0, Sigma0 = 2.8, Phi = phi, Q = sqrt(q), R = sqrt(r),\n          max.iter = 75, tol = .00001)\n\niteration    -loglikelihood \n    1          80.06323 \n    2          78.91486 \n    3          78.69396 \n    4          78.56839 \n    5          78.47927 \n    6          78.40996 \n    7          78.35368 \n    8          78.30696 \n    9          78.2677 \n    10          78.23446 \n    11          78.20617 \n    12          78.18201 \n    13          78.1613 \n    14          78.14349 \n    15          78.12813 \n    16          78.11485 \n    17          78.10333 \n    18          78.09331 \n    19          78.08456 \n    20          78.07689 \n    21          78.07015 \n    22          78.06421 \n    23          78.05895 \n    24          78.05428 \n    25          78.05011 \n    26          78.04637 \n    27          78.04302 \n    28          78.04 \n    29          78.03726 \n    30          78.03477 \n    31          78.03251 \n    32          78.03044 \n    33          78.02853 \n    34          78.02678 \n    35          78.02517 \n    36          78.02367 \n    37          78.02228 \n    38          78.02099 \n    39          78.01978 \n    40          78.01865 \n    41          78.0176 \n    42          78.0166 \n    43          78.01567 \n    44          78.01478 \n    45          78.01395 \n    46          78.01316 \n    47          78.01241",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#calculation-of-standard-errors",
+    "href": "cap6.html#calculation-of-standard-errors",
+    "title": "4  Capítulo 6",
+    "section": "10.6 Calculation of Standard Errors",
+    "text": "10.6 Calculation of Standard Errors\nUsing fdHess from the nlme package, we calculate the standard errors based on the Hessian of the log-likelihood at the final parameter estimates.\n\n# Standard Errors using fdHess\nphi &lt;- em$Phi\ncq &lt;- sqrt(em$Q)\ncr &lt;- sqrt(em$R)\nmu0 &lt;- em$mu0\nSigma0 &lt;- em$Sigma0\npara &lt;- c(phi, cq, cr)\n\n# Define likelihood function\nLinn &lt;- function(para) {\n  kf &lt;- Kfilter(y, 1, mu0, Sigma0, para[1], para[2], para[3])\n  return(kf$like)\n}\n\n# Evaluate Hessian and calculate standard errors\nemhess &lt;- fdHess(para, function(para) Linn(para))\nSE &lt;- sqrt(diag(solve(emhess$Hessian)))",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#summary-of-final-estimates",
+    "href": "cap6.html#summary-of-final-estimates",
+    "title": "4  Capítulo 6",
+    "section": "10.7 Summary of Final Estimates",
+    "text": "10.7 Summary of Final Estimates\nThe table below shows the final estimates from the EM algorithm along with their standard errors.\n\n# Display Summary of Estimation\nestimate &lt;- c(para, em$mu0, em$Sigma0)\nSE &lt;- c(SE, NA, NA)  # No standard errors for mu0 and Sigma0\nu &lt;- cbind(estimate, SE)\nrownames(u) &lt;- c('phi', 'sigw', 'sigv', 'mu0', 'Sigma0')\nu  # Display results\n\n          estimate         SE\nphi     0.80770475 0.07827525\nsigw    0.85642590 0.16295337\nsigv    0.86107346 0.13644243\nmu0    -2.10378197         NA\nSigma0  0.03807792         NA",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-4",
+    "href": "cap6.html#introduction-4",
+    "title": "4  Capítulo 6",
+    "section": "11.1 Introduction",
+    "text": "11.1 Introduction\nThis analysis uses the EM algorithm to estimate parameters for a multivariate time series model involving three biomedical markers: WBC, PLT, and HCT. After estimating parameters, we apply a Kalman smoother to obtain smoothed values and their confidence intervals.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-setup",
+    "href": "cap6.html#data-setup",
+    "title": "4  Capítulo 6",
+    "section": "11.2 Data Setup",
+    "text": "11.2 Data Setup\nWe begin by organizing the observed data into a matrix and setting up an array of observation matrices for the Kalman filter.\n\n# Combine data into a matrix\ny &lt;- cbind(WBC, PLT, HCT)\nnum &lt;- nrow(y)\n\n# Create array of observation matrices\nA &lt;- array(0, dim = c(3, 3, num))\nfor (k in 1:num) {\n  if (y[k, 1] &gt; 0) A[, , k] &lt;- diag(1, 3)  # Observation matrix if data is available\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#initial-parameter-values",
+    "href": "cap6.html#initial-parameter-values",
+    "title": "4  Capítulo 6",
+    "section": "11.3 Initial Parameter Values",
+    "text": "11.3 Initial Parameter Values\nWe define the initial values for the state vector, covariance matrices, and model parameters.\n\n# Initial values\nmu0 &lt;- matrix(0, 3, 1)                # Initial state mean vector\nSigma0 &lt;- diag(c(0.1, 0.1, 1), 3)     # Initial state covariance\nPhi &lt;- diag(1, 3)                     # State transition matrix\ncQ &lt;- diag(c(0.1, 0.1, 1), 3)         # Process noise covariance matrix\ncR &lt;- diag(c(0.1, 0.1, 1), 3)         # Observation noise covariance matrix",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#em-algorithm-procedure-1",
+    "href": "cap6.html#em-algorithm-procedure-1",
+    "title": "4  Capítulo 6",
+    "section": "11.4 EM Algorithm Procedure",
+    "text": "11.4 EM Algorithm Procedure\nWe run the EM algorithm using the EM1 function, specifying the maximum iterations and tolerance for convergence.\n\n# Run EM algorithm\nem &lt;- xEM1(num, y, A, mu0, Sigma0, Phi, cQ, cR, 100, 0.001)\n\niteration    -loglikelihood \n    1          68.28328 \n    2          -183.9361 \n    3          -194.2051 \n    4          -197.5444 \n    5          -199.7442 \n    6          -201.6431 \n    7          -203.4226 \n    8          -205.1253 \n    9          -206.7595 \n    10          -208.3251 \n    11          -209.8209 \n    12          -211.2464 \n    13          -212.602 \n    14          -213.8891 \n    15          -215.1094 \n    16          -216.2651 \n    17          -217.3589 \n    18          -218.3931 \n    19          -219.3705 \n    20          -220.2935 \n    21          -221.1649 \n    22          -221.9869 \n    23          -222.762 \n    24          -223.4924 \n    25          -224.1805 \n    26          -224.8282 \n    27          -225.4377 \n    28          -226.0109 \n    29          -226.5495 \n    30          -227.0555 \n    31          -227.5305 \n    32          -227.9762 \n    33          -228.3941 \n    34          -228.7857 \n    35          -229.1524 \n    36          -229.4956 \n    37          -229.8166 \n    38          -230.1166 \n    39          -230.3967 \n    40          -230.6582 \n    41          -230.9019 \n    42          -231.1289",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#smoothing-with-kalman-smoother",
+    "href": "cap6.html#smoothing-with-kalman-smoother",
+    "title": "4  Capítulo 6",
+    "section": "11.5 Smoothing with Kalman Smoother",
+    "text": "11.5 Smoothing with Kalman Smoother\nUsing the estimated parameters from the EM algorithm, we apply the Kalman smoother to obtain smoothed estimates and their uncertainties.\n\n# Apply Kalman smoother\nks &lt;- xKsmooth1(num, y, A, em$mu0, em$Sigma0, em$Phi, 0, 0, chol(em$Q), chol(em$R), 0)\n\n# Extract smoothed estimates and uncertainties\ny1s &lt;- ks$xs[1, , ]\ny2s &lt;- ks$xs[2, , ]\ny3s &lt;- ks$xs[3, , ]\np1 &lt;- 2 * sqrt(ks$Ps[1, 1, ])\np2 &lt;- 2 * sqrt(ks$Ps[2, 2, ])\np3 &lt;- 2 * sqrt(ks$Ps[3, 3, ])",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#plotting-results-1",
+    "href": "cap6.html#plotting-results-1",
+    "title": "4  Capítulo 6",
+    "section": "11.6 Plotting Results",
+    "text": "11.6 Plotting Results\nThe plots below show the original data for each marker along with the smoothed estimates and 95% confidence intervals.\n\n# Plot smoothed estimates and confidence intervals\npar(mfrow = c(3, 1))\n\n# Plot for WBC\nplot(WBC, type = 'p', pch = 19, ylim = c(1, 5), xlab = 'day', ylab = 'WBC')\nlines(y1s, col = 'blue')  # Smoothed estimate\nlines(y1s + p1, lty = 2, col = 4)  # Upper confidence bound\nlines(y1s - p1, lty = 2, col = 4)  # Lower confidence bound\n\n# Plot for PLT\nplot(PLT, type = 'p', ylim = c(3, 6), pch = 19, xlab = 'day', ylab = 'PLT')\nlines(y2s, col = 'blue')  # Smoothed estimate\nlines(y2s + p2, lty = 2, col = 4)  # Upper confidence bound\nlines(y2s - p2, lty = 2, col = 4)  # Lower confidence bound\n\n# Plot for HCT\nplot(HCT, type = 'p', pch = 19, ylim = c(20, 40), xlab = 'day', ylab = 'HCT')\nlines(y3s, col = 'blue')  # Smoothed estimate\nlines(y3s + p3, lty = 2, col = 4)  # Upper confidence bound\nlines(y3s - p3, lty = 2, col = 4)  # Lower confidence bound",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-5",
+    "href": "cap6.html#introduction-5",
+    "title": "4  Capítulo 6",
+    "section": "12.1 Introduction",
+    "text": "12.1 Introduction\nThis analysis uses a state-space model to estimate the trend and seasonal components of the Johnson & Johnson (J&J) quarterly earnings per share. The estimation procedure uses the Kalman filter and smoother, and forecasts are generated for the future values. The model parameters are estimated using maximum likelihood and the optim function.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#setup-1",
+    "href": "cap6.html#setup-1",
+    "title": "4  Capítulo 6",
+    "section": "12.2 Setup",
+    "text": "12.2 Setup\nWe start by setting up the observation matrix ( A ), the initial state mean ( _0 ), and covariance ( _0 ).\n\n# Setup\nnum &lt;- length(jj)  # Length of the time series data\nA &lt;- cbind(1, 1, 0, 0)  # Observation matrix\n\n# Initial Parameters\nmu0 &lt;- c(0.7, 0, 0, 0)              # Initial state mean vector\nSigma0 &lt;- diag(0.04, 4)             # Initial state covariance matrix\ninit.par &lt;- c(1.03, 0.1, 0.1, 0.5)  # Initial estimates for parameters",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#likelihood-function",
+    "href": "cap6.html#likelihood-function",
+    "title": "4  Capítulo 6",
+    "section": "12.3 Likelihood Function",
+    "text": "12.3 Likelihood Function\nThe Linn function calculates the likelihood for given parameters using the Kalman filter. It takes the parameters ( ), ( _w ) for process noise, and ( _v ) for observation noise.\n\n# Function to Calculate Likelihood\nLinn &lt;- function(para) {\n  Phi &lt;- diag(0, 4)\n  Phi[1, 1] &lt;- para[1]\n  Phi[2, ] &lt;- c(0, -1, -1, -1)\n  Phi[3, ] &lt;- c(0, 1, 0, 0)\n  Phi[4, ] &lt;- c(0, 0, 1, 0)\n  \n  cQ1 &lt;- para[2]\n  cQ2 &lt;- para[3]\n  cQ &lt;- diag(0, 4)\n  cQ[1, 1] &lt;- cQ1\n  cQ[2, 2] &lt;- cQ2\n  \n  cR &lt;- para[4]\n  \n  kf &lt;- xKfilter0(num, jj, A, mu0, Sigma0, Phi, cQ, cR)\n  return(kf$like)\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimation-2",
+    "href": "cap6.html#parameter-estimation-2",
+    "title": "4  Capítulo 6",
+    "section": "12.4 Parameter Estimation",
+    "text": "12.4 Parameter Estimation\nUsing the optim function, we estimate the parameters by maximizing the likelihood, and calculate standard errors.\n\n# Estimation\nest &lt;- optim(init.par, Linn, NULL, method = 'BFGS', hessian = TRUE,\n             control = list(trace = 1, REPORT = 1))\n\ninitial  value 2.693644 \niter   2 value -0.853526\niter   3 value -9.416505\niter   4 value -10.241752\niter   5 value -19.419809\niter   6 value -30.441188\niter   7 value -31.825543\niter   8 value -32.248413\niter   9 value -32.839918\niter  10 value -33.019870\niter  11 value -33.041749\niter  12 value -33.050583\niter  13 value -33.055492\niter  14 value -33.078152\niter  15 value -33.096870\niter  16 value -33.098405\niter  17 value -33.099018\niter  18 value -33.099385\niter  19 value -33.099498\niter  19 value -33.099498\nfinal  value -33.099498 \nconverged\n\nSE &lt;- sqrt(diag(solve(est$hessian)))\nu &lt;- cbind(estimate = est$par, SE)\nrownames(u) &lt;- c('Phi11', 'sigw1', 'sigw2', 'sigv')\nu  # Display results\n\n          estimate         SE\nPhi11 1.0350847657 0.00253645\nsigw1 0.1397255477 0.02155155\nsigw2 0.2208782663 0.02376430\nsigv  0.0004655672 0.24174702",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#smoothing-with-kalman-smoother-1",
+    "href": "cap6.html#smoothing-with-kalman-smoother-1",
+    "title": "4  Capítulo 6",
+    "section": "12.5 Smoothing with Kalman Smoother",
+    "text": "12.5 Smoothing with Kalman Smoother\nWe apply the Kalman smoother with the estimated parameters to extract the trend and seasonal components.\n\n# Smooth\nPhi &lt;- diag(0, 4)\nPhi[1, 1] &lt;- est$par[1]\nPhi[2, ] &lt;- c(0, -1, -1, -1)\nPhi[3, ] &lt;- c(0, 1, 0, 0)\nPhi[4, ] &lt;- c(0, 0, 1, 0)\n\ncQ1 &lt;- est$par[2]\ncQ2 &lt;- est$par[3]\ncQ &lt;- diag(1, 4)\ncQ[1, 1] &lt;- cQ1\ncQ[2, 2] &lt;- cQ2\ncR &lt;- est$par[4]\n\nks &lt;- xKsmooth0(num, jj, A, mu0, Sigma0, Phi, cQ, cR)\n\n# Extract trend and seasonal components\nTsm &lt;- ts(ks$xs[1, , ], start = 1960, freq = 4)\nSsm &lt;- ts(ks$xs[2, , ], start = 1960, freq = 4)\np1 &lt;- 3 * sqrt(ks$Ps[1, 1, ])\np2 &lt;- 3 * sqrt(ks$Ps[2, 2, ])",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#plotting-results-2",
+    "href": "cap6.html#plotting-results-2",
+    "title": "4  Capítulo 6",
+    "section": "12.6 Plotting Results",
+    "text": "12.6 Plotting Results\nThe plots show the trend component and the J&J quarterly earnings per share with the estimated trend and seasonal components.\n\n# Plot trend component and J&J data with confidence intervals\npar(mfrow = c(2, 1))\n\n# Trend component plot\nplot(Tsm, main = 'Trend Component', ylab = 'Trend')\nxx &lt;- c(time(jj), rev(time(jj)))\nyy &lt;- c(Tsm - p1, rev(Tsm + p1))\npolygon(xx, yy, border = NA, col = gray(0.5, alpha = 0.3))\n\n# Data and trend + season plot\nplot(jj, main = 'Data & Trend+Season', ylab = 'J&J QE/Share', ylim = c(-0.5, 17))\nxx &lt;- c(time(jj), rev(time(jj)))\nyy &lt;- c((Tsm + Ssm) - (p1 + p2), rev((Tsm + Ssm) + (p1 + p2)))\npolygon(xx, yy, border = NA, col = gray(0.5, alpha = 0.3))",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#forecasting",
+    "href": "cap6.html#forecasting",
+    "title": "4  Capítulo 6",
+    "section": "12.7 Forecasting",
+    "text": "12.7 Forecasting\nThe following code generates forecasts for the next 12 quarters, showing the forecast values with confidence intervals.\n\n# Forecast\nn.ahead &lt;- 12\ny &lt;- ts(append(jj, rep(0, n.ahead)), start = 1960, freq = 4)\nrmspe &lt;- rep(0, n.ahead)\nx00 &lt;- ks$xf[ , , num]\nP00 &lt;- ks$Pf[ , , num]\nQ &lt;- t(cQ) %*% cQ\nR &lt;- t(cR) %*% cR\n\nfor (m in 1:n.ahead) {\n  xp &lt;- Phi %*% x00\n  Pp &lt;- Phi %*% P00 %*% t(Phi) + Q\n  sig &lt;- A %*% Pp %*% t(A) + R\n  K &lt;- Pp %*% t(A) %*% (1 / sig)\n  x00 &lt;- xp\n  P00 &lt;- Pp - K %*% A %*% Pp\n  y[num + m] &lt;- A %*% xp\n  rmspe[m] &lt;- sqrt(sig)\n}\n\n# Forecast plot\nplot(y, type = 'o', main = '', ylab = 'J&J QE/Share', ylim = c(5, 30),\n     xlim = c(1975, 1984))\nupp &lt;- ts(y[(num + 1):(num + n.ahead)] + 2 * rmspe, start = 1981, freq = 4)\nlow &lt;- ts(y[(num + 1):(num + n.ahead)] - 2 * rmspe, start = 1981, freq = 4)\nxx &lt;- c(time(low), rev(time(upp)))\nyy &lt;- c(low, rev(upp))\npolygon(xx, yy, border = 8, col = gray(0.5, alpha = 0.3))\nabline(v = 1981, lty = 3)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-6",
+    "href": "cap6.html#introduction-6",
+    "title": "4  Capítulo 6",
+    "section": "13.1 Introduction",
+    "text": "13.1 Introduction\nThis analysis uses a state-space model to estimate parameters for inflation (qinfl) and interest rate (qintr) time series data. We use the Kalman filter to estimate the parameters and bootstrap to assess the variability of estimates. The plyr package is used to display progress, and psych is used for plotting with scatter.hist.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#setup-2",
+    "href": "cap6.html#setup-2",
+    "title": "4  Capítulo 6",
+    "section": "13.2 Setup",
+    "text": "13.2 Setup\nWe define the data and set initial parameters for the model.\n\n# Load necessary libraries\nlibrary(plyr)  # for displaying progress\nlibrary(psych) # for plotting\n\n\nAttaching package: 'psych'\n\n\nThe following object is masked from 'package:astsa':\n\n    scatter.hist\n\n# Set tolerance and bootstrap parameters\n# tol &lt;- sqrt(.Machine$double.eps)\n# nboot &lt;- 500\ntol &lt;- 0.001\nnboot &lt;- 200\n\n\n# Define data windows for inflation and interest rate\ny &lt;- window(qinfl, c(1953, 1), c(1965, 2))  # Inflation\nz &lt;- window(qintr, c(1953, 1), c(1965, 2))  # Interest rate\n\n# Set up the observation matrix\nnum &lt;- length(y)\nA &lt;- array(z, dim = c(1, 1, num))\ninput &lt;- matrix(1, num, 1)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#likelihood-function-1",
+    "href": "cap6.html#likelihood-function-1",
+    "title": "4  Capítulo 6",
+    "section": "13.3 Likelihood Function",
+    "text": "13.3 Likelihood Function\nThe Linn function calculates the likelihood for given parameters using the Kalman filter.\n\n# Function to Calculate Likelihood\nLinn &lt;- function(para, y.data) {\n  phi &lt;- para[1]\n  alpha &lt;- para[2]\n  b &lt;- para[3]\n  Ups &lt;- (1 - phi) * b\n  cQ &lt;- para[4]\n  cR &lt;- para[5]\n  \n  kf &lt;- xKfilter2(num, y.data, A, mu0, Sigma0, phi, Ups, alpha, 1, cQ, cR, 0, input)\n  return(kf$like)\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimation-3",
+    "href": "cap6.html#parameter-estimation-3",
+    "title": "4  Capítulo 6",
+    "section": "13.4 Parameter Estimation",
+    "text": "13.4 Parameter Estimation\nWe use the optim function to estimate the parameters by maximizing the likelihood.\n\n# Initial values for parameters\nmu0 &lt;- 1\nSigma0 &lt;- 0.01\ninit.par &lt;- c(phi = 0.84, alpha = -0.77, b = 0.85, cQ = 0.12, cR = 1.1)\n\n# Estimate parameters\nest &lt;- optim(init.par, Linn, NULL, y.data = y, method = \"BFGS\", hessian = TRUE,\n             control = list(trace = 1, REPORT = 1, reltol = tol))\n\ninitial  value 35.774060 \niter   1 value 35.742590\nfinal  value 35.742590 \nconverged\n\nSE &lt;- sqrt(diag(solve(est$hessian)))\nround(cbind(estimate = est$par, SE), 3)  # Display estimates and standard errors\n\n      estimate    SE\nphi      0.843 0.224\nalpha   -0.770 0.489\nb        0.847 0.230\ncQ       0.127 0.104\ncR       1.103 0.142",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#bootstrap-procedure",
+    "href": "cap6.html#bootstrap-procedure",
+    "title": "4  Capítulo 6",
+    "section": "13.5 Bootstrap Procedure",
+    "text": "13.5 Bootstrap Procedure\nThe bootstrap procedure is used to assess the variability of parameter estimates. The first three observations are fixed, and new residuals are sampled for each bootstrap iteration.\n\n# Run the filter at the estimates\nkf &lt;- xKfilter2(num, y, A, mu0, Sigma0, est$par[1], (1 - est$par[1]) * est$par[3], \n               est$par[2], 1, est$par[4], est$par[5], 0, input)\n\n# Initialize necessary values for bootstrap\nxp &lt;- kf$xp\ninnov &lt;- kf$innov\nsig &lt;- kf$sig\nK &lt;- kf$K\ne &lt;- innov / sqrt(sig)\ne.star &lt;- e\ny.star &lt;- y\nxp.star &lt;- xp\nk &lt;- 4:50  # Hold first 3 observations fixed\npara.star &lt;- matrix(0, nboot, 5)\ninit.par &lt;- c(0.84, -0.77, 0.85, 0.12, 1.1)\n\n# Initialize progress display\npr &lt;- progress_text()\npr$init(nboot)\n\n\n  |                                                                            \n  |                                                                      |   0%\n\nfor (i in 1:nboot) {\n  pr$step()\n  e.star[k] &lt;- sample(e[k], replace = TRUE)\n  \n  for (j in k) {\n    xp.star[j] &lt;- est$par[1] * xp.star[j - 1] + (1 - est$par[1]) * est$par[3] + \n                  K[j] * sqrt(sig[j]) * e.star[j]\n  }\n  \n  y.star[k] &lt;- z[k] * xp.star[k] + est$par[2] + sqrt(sig[k]) * e.star[j]\n  est.star &lt;- optim(init.par, Linn, NULL, y.data = y.star, method = \"BFGS\",\n                    control = list(reltol = tol))\n  \n  para.star[i, ] &lt;- c(est.star$par[1], est.star$par[2], est.star$par[3],\n                      abs(est.star$par[4]), abs(est.star$par[5]))\n}\n\n\n  |                                                                            \n  |=                                                                     |   1%\n  |                                                                            \n  |=                                                                     |   2%\n  |                                                                            \n  |==                                                                    |   2%\n  |                                                                            \n  |==                                                                    |   3%\n  |                                                                            \n  |==                                                                    |   4%\n  |                                                                            \n  |===                                                                   |   4%\n  |                                                                            \n  |====                                                                  |   5%\n  |                                                                            \n  |====                                                                  |   6%\n  |                                                                            \n  |=====                                                                 |   6%\n  |                                                                            \n  |=====                                                                 |   7%\n  |                                                                            \n  |=====                                                                 |   8%\n  |                                                                            \n  |======                                                                |   8%\n  |                                                                            \n  |======                                                                |   9%\n  |                                                                            \n  |=======                                                               |  10%\n  |                                                                            \n  |========                                                              |  11%\n  |                                                                            \n  |========                                                              |  12%\n  |                                                                            \n  |=========                                                             |  12%\n  |                                                                            \n  |=========                                                             |  13%\n  |                                                                            \n  |=========                                                             |  14%\n  |                                                                            \n  |==========                                                            |  14%\n  |                                                                            \n  |==========                                                            |  15%\n  |                                                                            \n  |===========                                                           |  16%\n  |                                                                            \n  |============                                                          |  16%\n  |                                                                            \n  |============                                                          |  17%\n  |                                                                            \n  |============                                                          |  18%\n  |                                                                            \n  |=============                                                         |  18%\n  |                                                                            \n  |=============                                                         |  19%\n  |                                                                            \n  |==============                                                        |  20%\n  |                                                                            \n  |===============                                                       |  21%\n  |                                                                            \n  |===============                                                       |  22%\n  |                                                                            \n  |================                                                      |  22%\n  |                                                                            \n  |================                                                      |  23%\n  |                                                                            \n  |================                                                      |  24%\n  |                                                                            \n  |=================                                                     |  24%\n  |                                                                            \n  |==================                                                    |  25%\n  |                                                                            \n  |==================                                                    |  26%\n  |                                                                            \n  |===================                                                   |  26%\n  |                                                                            \n  |===================                                                   |  27%\n  |                                                                            \n  |===================                                                   |  28%\n  |                                                                            \n  |====================                                                  |  28%\n  |                                                                            \n  |====================                                                  |  29%\n  |                                                                            \n  |=====================                                                 |  30%\n  |                                                                            \n  |======================                                                |  31%\n  |                                                                            \n  |======================                                                |  32%\n  |                                                                            \n  |=======================                                               |  32%\n  |                                                                            \n  |=======================                                               |  33%\n  |                                                                            \n  |=======================                                               |  34%\n  |                                                                            \n  |========================                                              |  34%\n  |                                                                            \n  |========================                                              |  35%\n  |                                                                            \n  |=========================                                             |  36%\n  |                                                                            \n  |==========================                                            |  36%\n  |                                                                            \n  |==========================                                            |  37%\n  |                                                                            \n  |==========================                                            |  38%\n  |                                                                            \n  |===========================                                           |  38%\n  |                                                                            \n  |===========================                                           |  39%\n  |                                                                            \n  |============================                                          |  40%\n  |                                                                            \n  |=============================                                         |  41%\n  |                                                                            \n  |=============================                                         |  42%\n  |                                                                            \n  |==============================                                        |  42%\n  |                                                                            \n  |==============================                                        |  43%\n  |                                                                            \n  |==============================                                        |  44%\n  |                                                                            \n  |===============================                                       |  44%\n  |                                                                            \n  |================================                                      |  45%\n  |                                                                            \n  |================================                                      |  46%\n  |                                                                            \n  |=================================                                     |  46%\n  |                                                                            \n  |=================================                                     |  47%\n  |                                                                            \n  |=================================                                     |  48%\n  |                                                                            \n  |==================================                                    |  48%\n  |                                                                            \n  |==================================                                    |  49%\n  |                                                                            \n  |===================================                                   |  50%\n  |                                                                            \n  |====================================                                  |  51%\n  |                                                                            \n  |====================================                                  |  52%\n  |                                                                            \n  |=====================================                                 |  52%\n  |                                                                            \n  |=====================================                                 |  53%\n  |                                                                            \n  |=====================================                                 |  54%\n  |                                                                            \n  |======================================                                |  54%\n  |                                                                            \n  |======================================                                |  55%\n  |                                                                            \n  |=======================================                               |  56%\n  |                                                                            \n  |========================================                              |  56%\n  |                                                                            \n  |========================================                              |  57%\n  |                                                                            \n  |========================================                              |  58%\n  |                                                                            \n  |=========================================                             |  58%\n  |                                                                            \n  |=========================================                             |  59%\n  |                                                                            \n  |==========================================                            |  60%\n  |                                                                            \n  |===========================================                           |  61%\n  |                                                                            \n  |===========================================                           |  62%\n  |                                                                            \n  |============================================                          |  62%\n  |                                                                            \n  |============================================                          |  63%\n  |                                                                            \n  |============================================                          |  64%\n  |                                                                            \n  |=============================================                         |  64%\n  |                                                                            \n  |==============================================                        |  65%\n  |                                                                            \n  |==============================================                        |  66%\n  |                                                                            \n  |===============================================                       |  66%\n  |                                                                            \n  |===============================================                       |  67%\n  |                                                                            \n  |===============================================                       |  68%\n  |                                                                            \n  |================================================                      |  68%\n  |                                                                            \n  |================================================                      |  69%\n  |                                                                            \n  |=================================================                     |  70%\n  |                                                                            \n  |==================================================                    |  71%\n  |                                                                            \n  |==================================================                    |  72%\n  |                                                                            \n  |===================================================                   |  72%\n  |                                                                            \n  |===================================================                   |  73%\n  |                                                                            \n  |===================================================                   |  74%\n  |                                                                            \n  |====================================================                  |  74%\n  |                                                                            \n  |====================================================                  |  75%\n  |                                                                            \n  |=====================================================                 |  76%\n  |                                                                            \n  |======================================================                |  76%\n  |                                                                            \n  |======================================================                |  77%\n  |                                                                            \n  |======================================================                |  78%\n  |                                                                            \n  |=======================================================               |  78%\n  |                                                                            \n  |=======================================================               |  79%\n  |                                                                            \n  |========================================================              |  80%\n  |                                                                            \n  |=========================================================             |  81%\n  |                                                                            \n  |=========================================================             |  82%\n  |                                                                            \n  |==========================================================            |  82%\n  |                                                                            \n  |==========================================================            |  83%\n  |                                                                            \n  |==========================================================            |  84%\n  |                                                                            \n  |===========================================================           |  84%\n  |                                                                            \n  |============================================================          |  85%\n  |                                                                            \n  |============================================================          |  86%\n  |                                                                            \n  |=============================================================         |  86%\n  |                                                                            \n  |=============================================================         |  87%\n  |                                                                            \n  |=============================================================         |  88%\n  |                                                                            \n  |==============================================================        |  88%\n  |                                                                            \n  |==============================================================        |  89%\n  |                                                                            \n  |===============================================================       |  90%\n  |                                                                            \n  |================================================================      |  91%\n  |                                                                            \n  |================================================================      |  92%\n  |                                                                            \n  |=================================================================     |  92%\n  |                                                                            \n  |=================================================================     |  93%\n  |                                                                            \n  |=================================================================     |  94%\n  |                                                                            \n  |==================================================================    |  94%\n  |                                                                            \n  |==================================================================    |  95%\n  |                                                                            \n  |===================================================================   |  96%\n  |                                                                            \n  |====================================================================  |  96%\n  |                                                                            \n  |====================================================================  |  97%\n  |                                                                            \n  |====================================================================  |  98%\n  |                                                                            \n  |===================================================================== |  98%\n  |                                                                            \n  |===================================================================== |  99%\n  |                                                                            \n  |======================================================================| 100%",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#standard-error-calculation-from-bootstrap",
+    "href": "cap6.html#standard-error-calculation-from-bootstrap",
+    "title": "4  Capítulo 6",
+    "section": "13.6 Standard Error Calculation from Bootstrap",
+    "text": "13.6 Standard Error Calculation from Bootstrap\nStandard errors are calculated from the bootstrap replicates.\n\n# Calculate RMSE for bootstrap estimates\nrmse &lt;- rep(NA, 5)\nfor (i in 1:5) {\n  rmse[i] &lt;- sqrt(sum((para.star[, i] - est$par[i])^2) / nboot)\n  cat(i, rmse[i], \"\\n\")\n}\n\n1 0.2427027 \n2 0.8895267 \n3 0.6339146 \n4 0.08817372 \n5 0.8628564",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#scatter-plot-of-bootstrap-estimates",
+    "href": "cap6.html#scatter-plot-of-bootstrap-estimates",
+    "title": "4  Capítulo 6",
+    "section": "13.7 Scatter Plot of Bootstrap Estimates",
+    "text": "13.7 Scatter Plot of Bootstrap Estimates\nThe scatter.hist function from the psych package is used to visualize the distribution of the parameter estimates.\n\n# Plot phi and sigw\nphi &lt;- para.star[, 1]\nsigw &lt;- abs(para.star[, 4])\nphi &lt;- ifelse(phi &lt; 0, NA, phi)  # Remove negative phi values for plotting\n\n# Scatter plot with histogram\n# Plot phi and sigw without \"panel.first\" argument\n# Plot phi and sigw without \"col\" argument\n\n# (See a better plot in figure 6.10 in the book)\n# scatter.hist(sigw, phi, \n#              ylab = expression(phi), \n#              xlab = expression(sigma[~w]),\n#              smooth = FALSE, \n#              correl = FALSE, \n#              density = FALSE, \n#              ellipse = FALSE,\n#              title = '', \n#              pch = 19, \n#              cex.lab = 1.2)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-7",
+    "href": "cap6.html#introduction-7",
+    "title": "4  Capítulo 6",
+    "section": "14.1 Introduction",
+    "text": "14.1 Introduction\nThis analysis uses a hidden Markov model (HMM) to model earthquake counts (EQcount) with two states. The model assumes Poisson-distributed earthquake counts in each state, and we estimate the transition probabilities and Poisson rate parameters.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#model-setup-and-estimation",
+    "href": "cap6.html#model-setup-and-estimation",
+    "title": "4  Capítulo 6",
+    "section": "14.2 Model Setup and Estimation",
+    "text": "14.2 Model Setup and Estimation\nWe fit a 2-state HMM to the EQcount data, using a Poisson distribution for the emission probabilities. The estimated parameters are extracted and adjusted to ensure state 1 has the smaller lambda (intensity parameter).\n\n# Load necessary package\nlibrary(depmixS4)\n\nLoading required package: nnet\n\n\nLoading required package: MASS\n\n\nLoading required package: Rsolnp\n\n# Define and fit the model\nmodel &lt;- depmix(EQcount ~ 1, nstates = 2, data = data.frame(EQcount), family = poisson())\nset.seed(90210)\nsummary(fm &lt;- fit(model))\n\nconverged at iteration 26 with logLik: -341.8787 \nInitial state probabilities model \npr1 pr2 \n  1   0 \n\nTransition matrix \n        toS1  toS2\nfromS1 0.928 0.072\nfromS2 0.119 0.881\n\nResponse parameters \nResp 1 : poisson \n    Re1.(Intercept)\nSt1           2.736\nSt2           3.259\n\n# Get parameters and ensure state 1 has smaller lambda\nu &lt;- as.vector(getpars(fm))\nif (u[7] &lt;= u[8]) {\n  para.mle &lt;- c(u[3:6], exp(u[7]), exp(u[8]))\n} else {\n  para.mle &lt;- c(u[6:3], exp(u[8]), exp(u[7]))\n}\n\n# Transition matrix and lambda values\nmtrans &lt;- matrix(para.mle[1:4], byrow = TRUE, nrow = 2)\nlams &lt;- para.mle[5:6]\n\n# Calculate stationary probabilities\npi1 &lt;- mtrans[2, 1] / (2 - mtrans[1, 1] - mtrans[2, 2])\npi2 &lt;- 1 - pi1",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#visualization-1",
+    "href": "cap6.html#visualization-1",
+    "title": "4  Capítulo 6",
+    "section": "14.3 Visualization",
+    "text": "14.3 Visualization\nWe visualize the earthquake counts, the posterior probabilities of being in state 2, and the histogram with fitted Poisson distributions.\n\n# Setup layout for plots\nlayout(matrix(c(1, 2, 1, 3), 2))\npar(mar = c(3, 3, 1, 1), mgp = c(1.6, .6, 0))\n\n# Plot EQcount and states\nplot(EQcount, main = \"\", ylab = 'EQcount', type = 'h', col = gray(0.7))\ntext(EQcount, col = 6 * posterior(fm)[, 1] - 2, labels = posterior(fm)[, 1], cex = 0.9)\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\n# Plot probability of state 2\nplot(ts(posterior(fm)[, 3], start = 1900), ylab = expression(hat(pi)[~2]*'(t|n)'))\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\nabline(h = 0.5, lty = 2)\n\n# Histogram of EQcount with fitted Poisson distributions\nhist(EQcount, breaks = 30, prob = TRUE, main = \"\")\nxvals &lt;- seq(1, 45)\nu1 &lt;- pi1 * dpois(xvals, lams[1])\nu2 &lt;- pi2 * dpois(xvals, lams[2])\nlines(xvals, u1, col = 4)\nlines(xvals, u2, col = 2)",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#bootstrap-procedure-1",
+    "href": "cap6.html#bootstrap-procedure-1",
+    "title": "4  Capítulo 6",
+    "section": "14.4 Bootstrap Procedure",
+    "text": "14.4 Bootstrap Procedure\nA bootstrap procedure is used to estimate the standard errors of the parameters by resampling the residuals. We generate bootstrap samples, fit the model to each sample, and store the estimates.\n\n# Function to generate data from Poisson HMM\npois.HMM.generate_sample &lt;- function(n, m, lambda, Mtrans, StatDist = NULL) {\n  if (is.null(StatDist)) StatDist &lt;- solve(t(diag(m) - Mtrans + 1), rep(1, m))\n  mvect &lt;- 1:m\n  state &lt;- numeric(n)\n  state[1] &lt;- sample(mvect, 1, prob = StatDist)\n  for (i in 2:n) state[i] &lt;- sample(mvect, 1, prob = Mtrans[state[i - 1], ])\n  y &lt;- rpois(n, lambda = lambda[state])\n  list(y = y, state = state)\n}\n\n# Run bootstrap\nset.seed(10101101)\nnboot &lt;- 100\nnobs &lt;- length(EQcount)\npara.star &lt;- matrix(NA, nrow = nboot, ncol = 6)\nfor (j in 1:nboot) {\n  x.star &lt;- pois.HMM.generate_sample(n = nobs, m = 2, lambda = lams, Mtrans = mtrans)$y\n  model &lt;- depmix(x.star ~ 1, nstates = 2, data = data.frame(x.star), family = poisson())\n  u &lt;- as.vector(getpars(fit(model, verbose = 0)))\n  if (u[7] &lt;= u[8]) {\n    para.star[j, ] &lt;- c(u[3:6], exp(u[7]), exp(u[8]))\n  } else {\n    para.star[j, ] &lt;- c(u[6:3], exp(u[8]), exp(u[7]))\n  }\n}\n\nconverged at iteration 28 with logLik: -317.3536 \nconverged at iteration 10 with logLik: -336.3123 \nconverged at iteration 15 with logLik: -330.7023 \nconverged at iteration 16 with logLik: -325.2017 \nconverged at iteration 19 with logLik: -334.0389 \nconverged at iteration 16 with logLik: -321.5097 \nconverged at iteration 25 with logLik: -342.4645 \nconverged at iteration 15 with logLik: -323.6899 \nconverged at iteration 9 with logLik: -321.6437 \nconverged at iteration 18 with logLik: -322.362 \nconverged at iteration 12 with logLik: -327.4347 \nconverged at iteration 10 with logLik: -317.0057 \nconverged at iteration 9 with logLik: -338.8998 \nconverged at iteration 12 with logLik: -334.3831 \nconverged at iteration 10 with logLik: -320.6662 \nconverged at iteration 15 with logLik: -337.1912 \nconverged at iteration 14 with logLik: -329.5808 \nconverged at iteration 17 with logLik: -323.376 \nconverged at iteration 15 with logLik: -327.2818 \nconverged at iteration 15 with logLik: -324.8806 \nconverged at iteration 12 with logLik: -328.8237 \nconverged at iteration 13 with logLik: -323.2429 \nconverged at iteration 35 with logLik: -303.1696 \nconverged at iteration 14 with logLik: -311.838 \nconverged at iteration 20 with logLik: -325.593 \nconverged at iteration 25 with logLik: -344.3057 \nconverged at iteration 13 with logLik: -336.7609 \nconverged at iteration 9 with logLik: -331.3855 \nconverged at iteration 16 with logLik: -329.6708 \nconverged at iteration 38 with logLik: -320.4871 \nconverged at iteration 40 with logLik: -321.4419 \nconverged at iteration 20 with logLik: -340.2987 \nconverged at iteration 11 with logLik: -316.1531 \nconverged at iteration 19 with logLik: -331.9695 \nconverged at iteration 15 with logLik: -328.3009 \nconverged at iteration 22 with logLik: -336.7947 \nconverged at iteration 14 with logLik: -335.777 \nconverged at iteration 19 with logLik: -336.8923 \nconverged at iteration 17 with logLik: -328.7383 \nconverged at iteration 14 with logLik: -338.4921 \nconverged at iteration 18 with logLik: -335.8289 \nconverged at iteration 13 with logLik: -324.3853 \nconverged at iteration 19 with logLik: -332.4478 \nconverged at iteration 23 with logLik: -331.5049 \nconverged at iteration 18 with logLik: -320.7098 \nconverged at iteration 16 with logLik: -333.7366 \nconverged at iteration 16 with logLik: -342.2729 \nconverged at iteration 13 with logLik: -330.8512 \nconverged at iteration 9 with logLik: -323.9359 \nconverged at iteration 17 with logLik: -332.7441 \nconverged at iteration 24 with logLik: -322.1631 \nconverged at iteration 54 with logLik: -324.2249 \nconverged at iteration 17 with logLik: -312.7729 \nconverged at iteration 13 with logLik: -331.0078 \nconverged at iteration 16 with logLik: -320.4881 \nconverged at iteration 12 with logLik: -333.6678 \nconverged at iteration 17 with logLik: -351.9982 \nconverged at iteration 16 with logLik: -312.2302 \nconverged at iteration 9 with logLik: -324.7744 \nconverged at iteration 11 with logLik: -328.7093 \nconverged at iteration 12 with logLik: -326.4755 \nconverged at iteration 17 with logLik: -331.4812 \nconverged at iteration 13 with logLik: -335.3246 \nconverged at iteration 14 with logLik: -320.2642 \nconverged at iteration 11 with logLik: -321.1371 \nconverged at iteration 22 with logLik: -343.5264 \nconverged at iteration 15 with logLik: -344.8566 \nconverged at iteration 12 with logLik: -324.5623 \nconverged at iteration 13 with logLik: -329.2879 \nconverged at iteration 29 with logLik: -343.0569 \nconverged at iteration 17 with logLik: -336.5592 \nconverged at iteration 20 with logLik: -333.9896 \nconverged at iteration 18 with logLik: -341.6623 \nconverged at iteration 10 with logLik: -319.5575 \nconverged at iteration 10 with logLik: -320.8678 \nconverged at iteration 17 with logLik: -335.7764 \nconverged at iteration 16 with logLik: -324.6303 \nconverged at iteration 13 with logLik: -343.359 \nconverged at iteration 14 with logLik: -335.697 \nconverged at iteration 167 with logLik: -321.9255 \nconverged at iteration 49 with logLik: -309.581 \nconverged at iteration 64 with logLik: -337.8977 \nconverged at iteration 19 with logLik: -333.5856 \nconverged at iteration 26 with logLik: -329.8142 \nconverged at iteration 11 with logLik: -333.4356 \nconverged at iteration 40 with logLik: -335.0244 \nconverged at iteration 15 with logLik: -321.1205 \nconverged at iteration 35 with logLik: -326.9086 \nconverged at iteration 18 with logLik: -323.0662 \nconverged at iteration 18 with logLik: -330.1606 \nconverged at iteration 15 with logLik: -320.2706 \nconverged at iteration 19 with logLik: -323.3005 \nconverged at iteration 15 with logLik: -320.9108 \nconverged at iteration 13 with logLik: -326.7983 \nconverged at iteration 12 with logLik: -317.1947 \nconverged at iteration 14 with logLik: -333.5056 \nconverged at iteration 13 with logLik: -329.1758 \nconverged at iteration 9 with logLik: -319.8779 \nconverged at iteration 13 with logLik: -341.9616 \nconverged at iteration 12 with logLik: -321.6762",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#bootstrapped-standard-errors",
+    "href": "cap6.html#bootstrapped-standard-errors",
+    "title": "4  Capítulo 6",
+    "section": "14.5 Bootstrapped Standard Errors",
+    "text": "14.5 Bootstrapped Standard Errors\nCalculate the standard errors of the parameters based on the bootstrap replicates.\n\n# Calculate bootstrapped standard errors\nSE &lt;- sqrt(apply(para.star, 2, var) + (apply(para.star, 2, mean) - para.mle)^2)[c(1, 4:6)]\nnames(SE) &lt;- c('seM11/M12', 'seM21/M22', 'seLam1', 'seLam2')\nSE  # Display standard errors\n\n seM11/M12  seM21/M22     seLam1     seLam2 \n0.04074297 0.09218465 0.66300322 1.10658114",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-8",
+    "href": "cap6.html#introduction-8",
+    "title": "4  Capítulo 6",
+    "section": "15.1 Introduction",
+    "text": "15.1 Introduction\nThis analysis fits a 3-state hidden Markov model (HMM) to the S&P500 weekly returns (sp500w). The HMM assumes that returns follow a Gaussian distribution in each state. The model is estimated using maximum likelihood, and bootstrap is used to assess parameter variability.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#model-setup-and-estimation-1",
+    "href": "cap6.html#model-setup-and-estimation-1",
+    "title": "4  Capítulo 6",
+    "section": "15.2 Model Setup and Estimation",
+    "text": "15.2 Model Setup and Estimation\nWe define and fit a 3-state HMM using the depmixS4 package.\n\n# Prepare the data\ny &lt;- ts(sp500w, start = 2003, freq = 52)\n\n# Define and fit the model\nmod3 &lt;- depmix(y ~ 1, nstates = 3, data = data.frame(y))\nset.seed(2)\nsummary(fm3 &lt;- fit(mod3))\n\nconverged at iteration 363 with logLik: 1236.996 \nInitial state probabilities model \npr1 pr2 pr3 \n  1   0   0 \n\nTransition matrix \n        toS1  toS2  toS3\nfromS1 0.942 0.027 0.032\nfromS2 0.261 0.000 0.739\nfromS3 0.000 0.055 0.945\n\nResponse parameters \nResp 1 : gaussian \n    Re1.(Intercept) Re1.sd\nSt1          -0.003  0.044\nSt2          -0.034  0.009\nSt3           0.004  0.014",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimates",
+    "href": "cap6.html#parameter-estimates",
+    "title": "4  Capítulo 6",
+    "section": "15.3 Parameter Estimates",
+    "text": "15.3 Parameter Estimates\nWe extract and adjust the parameter estimates to handle potential label-switching issues.\n\n# Extract maximum likelihood estimates (MLEs)\npara.mle &lt;- as.vector(getpars(fm3)[-(1:3)])\npermu &lt;- matrix(c(0, 0, 1, 0, 1, 0, 1, 0, 0), 3, 3)  # Adjust for label-switching\n\n# Transition matrix and Gaussian parameters\nmtrans.mle &lt;- permu %*% round(t(matrix(para.mle[1:9], 3, 3)), 3) %*% permu\nnorms.mle &lt;- round(matrix(para.mle[10:15], 2, 3), 3) %*% permu",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#visualization-2",
+    "href": "cap6.html#visualization-2",
+    "title": "4  Capítulo 6",
+    "section": "15.4 Visualization",
+    "text": "15.4 Visualization\nWe visualize the returns and their posterior probabilities, as well as the autocorrelation and histogram with Gaussian fits for each state.\n\n# Plot setup\nlayout(matrix(c(1, 2, 1, 3), 2), heights = c(1, 0.75))\npar(mar = c(2.5, 2.5, 0.5, 0.5), mgp = c(1.6, 0.6, 0))\n\n# Plot returns and posterior probabilities\nplot(y, main = \"\", ylab = 'S&P500 Weekly Returns', col = gray(0.7), ylim = c(-0.11, 0.11))\nculer &lt;- 4 - posterior(fm3)[, 1]\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\nculer[culer == 3] &lt;- 4  # Switch labels for state 1 and 3\ntext(y, col = culer, labels = 4 - posterior(fm3)[, 1])\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\n# Plot autocorrelation of squared returns\nacf(y^2, xlim = c(0.02, 0.5), ylim = c(-0.09, 0.5), panel.first = grid(lty = 2))\n\n# Histogram of returns with Gaussian fits\nhist(y, 25, prob = TRUE, main = \"\")\nculer &lt;- c(1, 2, 4)\npi.hat &lt;- colSums(posterior(fm3)[-1, 2:4]) / length(y)\n\nWarning in .local(object, ...): Argument 'type' not specified and will default\nto 'viterbi'. This default may change in future releases of depmixS4. Please\nsee ?posterior for alternative options.\n\nfor (i in 1:3) {\n  mu &lt;- norms.mle[1, i]\n  sig &lt;- norms.mle[2, i]\n  x &lt;- seq(-0.15, 0.12, by = 0.001)\n  lines(x, pi.hat[4 - i] * dnorm(x, mean = mu, sd = sig), col = culer[i])\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#bootstrap-procedure-2",
+    "href": "cap6.html#bootstrap-procedure-2",
+    "title": "4  Capítulo 6",
+    "section": "15.5 Bootstrap Procedure",
+    "text": "15.5 Bootstrap Procedure\nWe use a bootstrap procedure to assess the variability of the parameter estimates by simulating data from the fitted model and re-estimating parameters.\n\n# Bootstrap setup\nset.seed(666)\nn.obs &lt;- length(y)\nn.boot &lt;- 100\npara.star &lt;- matrix(NA, nrow = n.boot, ncol = 15)\nrespst &lt;- para.mle[10:15]\ntrst &lt;- para.mle[1:9]\n\n# Run bootstrap\nfor (nb in 1:n.boot) {\n  mod &lt;- simulate(mod3)\n  y.star &lt;- as.vector(mod@response[[1]][[1]]@y)\n  dfy &lt;- data.frame(y.star)\n  mod.star &lt;- depmix(y.star ~ 1, data = dfy, respst = respst, trst = trst, nst = 3)\n  fm.star &lt;- fit(mod.star, emcontrol = em.control(tol = 1e-5), verbose = FALSE)\n  para.star[nb, ] &lt;- as.vector(getpars(fm.star)[-(1:3)])\n}\n\nconverged at iteration 137 with logLik: -685.0962 \nconverged at iteration 40 with logLik: -715.0901 \nconverged at iteration 42 with logLik: -711.9793 \nconverged at iteration 62 with logLik: -728.6847 \nconverged at iteration 47 with logLik: -683.3955 \nconverged at iteration 73 with logLik: -719.2561 \nconverged at iteration 18 with logLik: -719.1667 \nconverged at iteration 10 with logLik: -717.0603 \nconverged at iteration 41 with logLik: -713.9096 \nconverged at iteration 36 with logLik: -714.0937 \nconverged at iteration 61 with logLik: -711.3154 \nconverged at iteration 68 with logLik: -689.7452 \nconverged at iteration 59 with logLik: -718.1053 \nconverged at iteration 68 with logLik: -715.2818 \nconverged at iteration 111 with logLik: -725.1249 \nconverged at iteration 34 with logLik: -707.9774 \nconverged at iteration 37 with logLik: -722.7253 \nconverged at iteration 25 with logLik: -721.1461 \nconverged at iteration 70 with logLik: -687.7122 \nconverged at iteration 89 with logLik: -703.9078 \nconverged at iteration 127 with logLik: -712.3814 \nconverged at iteration 47 with logLik: -709.9084 \nconverged at iteration 49 with logLik: -719.1742 \nconverged at iteration 86 with logLik: -716.4459 \nconverged at iteration 19 with logLik: -728.5627 \nconverged at iteration 117 with logLik: -741.5508 \nconverged at iteration 59 with logLik: -724.3466 \nconverged at iteration 125 with logLik: -709.3661 \nconverged at iteration 29 with logLik: -702.9124 \nconverged at iteration 73 with logLik: -723.6699 \nconverged at iteration 5 with logLik: -707.7749 \nconverged at iteration 30 with logLik: -706.955 \nconverged at iteration 68 with logLik: -717.8612 \nconverged at iteration 53 with logLik: -699.8133 \nconverged at iteration 63 with logLik: -738.885 \nconverged at iteration 49 with logLik: -714.506 \nconverged at iteration 10 with logLik: -720.1578 \nconverged at iteration 4 with logLik: -745.3851 \nconverged at iteration 134 with logLik: -736.3881 \nconverged at iteration 10 with logLik: -722.0937 \nconverged at iteration 26 with logLik: -716.9009 \nconverged at iteration 112 with logLik: -719.9439 \nconverged at iteration 5 with logLik: -736.8251 \nconverged at iteration 4 with logLik: -737.3519 \nconverged at iteration 33 with logLik: -717.5958 \nconverged at iteration 46 with logLik: -689.7854 \nconverged at iteration 67 with logLik: -718.414 \nconverged at iteration 203 with logLik: -708.6658 \nconverged at iteration 21 with logLik: -720.1915 \nconverged at iteration 55 with logLik: -722.1156 \nconverged at iteration 129 with logLik: -712.7773 \nconverged at iteration 7 with logLik: -716.8763 \nconverged at iteration 6 with logLik: -697.5471 \nconverged at iteration 26 with logLik: -714.4512 \nconverged at iteration 82 with logLik: -746.5156 \nconverged at iteration 13 with logLik: -742.0853 \nconverged at iteration 30 with logLik: -730.0876 \nconverged at iteration 85 with logLik: -700.2979 \nconverged at iteration 63 with logLik: -716.1117 \nconverged at iteration 18 with logLik: -678.0246 \nconverged at iteration 142 with logLik: -719.0167 \nconverged at iteration 88 with logLik: -727.6358 \nconverged at iteration 13 with logLik: -719.2273 \nconverged at iteration 55 with logLik: -727.4717 \nconverged at iteration 29 with logLik: -729.9938 \nconverged at iteration 41 with logLik: -698.3121 \nconverged at iteration 18 with logLik: -717.0544 \nconverged at iteration 45 with logLik: -736.7178 \nconverged at iteration 86 with logLik: -731.9154 \nconverged at iteration 50 with logLik: -705.7303 \nconverged at iteration 20 with logLik: -749.1358 \nconverged at iteration 75 with logLik: -703.0108 \nconverged at iteration 39 with logLik: -696.3187 \nconverged at iteration 21 with logLik: -705.1997 \nconverged at iteration 79 with logLik: -720.6175 \nconverged at iteration 47 with logLik: -667.1072 \nconverged at iteration 91 with logLik: -752.0564 \nconverged at iteration 99 with logLik: -698.3989 \nconverged at iteration 3 with logLik: -717.7247 \nconverged at iteration 64 with logLik: -710.3168 \nconverged at iteration 144 with logLik: -701.0941 \nconverged at iteration 49 with logLik: -742.9761 \nconverged at iteration 74 with logLik: -741.614 \nconverged at iteration 86 with logLik: -735.7934 \nconverged at iteration 179 with logLik: -706.4811 \nconverged at iteration 26 with logLik: -713.8593 \nconverged at iteration 32 with logLik: -723.8202 \nconverged at iteration 93 with logLik: -744.5042 \nconverged at iteration 20 with logLik: -731.8394 \nconverged at iteration 5 with logLik: -718.826 \nconverged at iteration 110 with logLik: -726.9593 \nconverged at iteration 66 with logLik: -726.0535 \nconverged at iteration 77 with logLik: -724.0721 \nconverged at iteration 78 with logLik: -702.4992 \nconverged at iteration 92 with logLik: -703.1677 \nconverged at iteration 40 with logLik: -709.626 \nconverged at iteration 89 with logLik: -741.0967 \nconverged at iteration 140 with logLik: -714.3438 \nconverged at iteration 186 with logLik: -702.3318 \nconverged at iteration 42 with logLik: -733.453",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#bootstrap-standard-errors",
+    "href": "cap6.html#bootstrap-standard-errors",
+    "title": "4  Capítulo 6",
+    "section": "15.6 Bootstrap Standard Errors",
+    "text": "15.6 Bootstrap Standard Errors\nWe calculate standard errors for the transition probabilities and Gaussian parameters based on the bootstrap replicates.\n\n# Calculate bootstrap standard errors\nSE &lt;- sqrt(apply(para.star, 2, var) + (apply(para.star, 2, mean) - para.mle)^2)\n\n# Adjust for label-switching\nSE.mtrans.mle &lt;- permu %*% round(t(matrix(SE[1:9], 3, 3)), 3) %*% permu\nSE.norms.mle &lt;- round(matrix(SE[10:15], 2, 3), 3) %*% permu\n\n# Display results\nSE.mtrans.mle\n\n      [,1]  [,2]  [,3]\n[1,] 0.074 0.074 0.000\n[2,] 0.275 0.000 0.275\n[3,] 0.122 0.057 0.147\n\nSE.norms.mle\n\n      [,1]  [,2]  [,3]\n[1,] 0.173 0.909 0.317\n[2,] 0.968 0.777 0.910",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#introduction-9",
+    "href": "cap6.html#introduction-9",
+    "title": "4  Capítulo 6",
+    "section": "16.1 Introduction",
+    "text": "16.1 Introduction\nThis analysis models influenza counts (flu) using a regime-switching Kalman filter. The model identifies two regimes: normal and epidemic, with different observation matrices. The parameters are estimated using maximum likelihood, and the results include regime probabilities and predictions.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#data-setup-and-initialization",
+    "href": "cap6.html#data-setup-and-initialization",
+    "title": "4  Capítulo 6",
+    "section": "16.2 Data Setup and Initialization",
+    "text": "16.2 Data Setup and Initialization\nWe define the influenza data, number of states, and initial matrices for filtering and prediction.\n\n# Prepare data and initialize matrices\ny &lt;- as.matrix(flu)\nnum &lt;- length(y)\nnstate &lt;- 4\n\n# Observation matrices\nM1 &lt;- as.matrix(cbind(1, 0, 0, 1))  # Normal\nM2 &lt;- as.matrix(cbind(1, 0, 1, 1))  # Epidemic\n\n# Initialize storage for probabilities and filters\nprob &lt;- matrix(0, num, 1)\nyp &lt;- y  # Store predictions\nxfilter &lt;- array(0, dim = c(nstate, 1, num))  # Store filtered states",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#likelihood-function-2",
+    "href": "cap6.html#likelihood-function-2",
+    "title": "4  Capítulo 6",
+    "section": "16.3 Likelihood Function",
+    "text": "16.3 Likelihood Function\nThe Linn function calculates the log-likelihood using the Kalman filter for a regime-switching model.\n\n# Define likelihood function\nLinn &lt;- function(para) {\n  alpha1 &lt;- para[1]\n  alpha2 &lt;- para[2]\n  beta0 &lt;- para[3]\n  sQ1 &lt;- para[4]\n  sQ2 &lt;- para[5]\n  like &lt;- 0\n\n  # Initial filter and prediction\n  xf &lt;- matrix(0, nstate, 1)\n  Pf &lt;- diag(0.1, nstate)  # Filter covariance\n  Pp &lt;- diag(0.1, nstate)  # Prediction covariance\n  phi &lt;- matrix(0, nstate, nstate)\n  phi[1, 1] &lt;- alpha1\n  phi[1, 2] &lt;- alpha2\n  phi[2, 1] &lt;- 1\n  phi[4, 4] &lt;- 1\n\n  Ups &lt;- as.matrix(rbind(0, 0, beta0, 0))\n  Q &lt;- matrix(0, nstate, nstate)\n  Q[1, 1] &lt;- sQ1^2\n  Q[3, 3] &lt;- sQ2^2\n\n  # Transition probabilities\n  pi11 &lt;- 0.75\n  pi12 &lt;- 0.25\n  pi21 &lt;- 0.25\n  pi22 &lt;- 0.75\n  pif1 &lt;- 0.5\n  pif2 &lt;- 0.5\n\n  # Begin filtering\n  for (i in 1:num) {\n    # Prediction step\n    xp &lt;- phi %*% xf + Ups\n    Pp &lt;- phi %*% Pf %*% t(phi) + Q\n\n    # Calculate likelihood for each regime\n    sig1 &lt;- as.numeric(M1 %*% Pp %*% t(M1))\n    sig2 &lt;- as.numeric(M2 %*% Pp %*% t(M2))\n    k1 &lt;- Pp %*% t(M1) / sig1\n    k2 &lt;- Pp %*% t(M2) / sig2\n    e1 &lt;- y[i] - M1 %*% xp\n    e2 &lt;- y[i] - M2 %*% xp\n\n    den1 &lt;- (1 / sqrt(sig1)) * exp(-0.5 * e1^2 / sig1)\n    den2 &lt;- (1 / sqrt(sig2)) * exp(-0.5 * e2^2 / sig2)\n\n    pip1 &lt;- pif1 * pi11 + pif2 * pi21\n    pip2 &lt;- pif1 * pi12 + pif2 * pi22\n    pif1 &lt;- pip1 * den1 / (pip1 * den1 + pip2 * den2)\n    pif2 &lt;- pip2 * den2 / (pip1 * den1 + pip2 * den2)\n\n    # Update state\n    pif1 &lt;- as.numeric(pif1)\n    pif2 &lt;- as.numeric(pif2)\n    e1 &lt;- as.numeric(e1)\n    e2 &lt;- as.numeric(e2)\n    \n    xf &lt;- xp + pif1 * k1 * e1 + pif2 * k2 * e2\n    Pf &lt;- pif1 * (diag(1, nstate) - k1 %*% M1) %*% Pp +\n          pif2 * (diag(1, nstate) - k2 %*% M2) %*% Pp\n    like &lt;- like - log(pip1 * den1 + pip2 * den2)\n\n    prob[i] &lt;&lt;- pip2\n    xfilter[, , i] &lt;&lt;- xf\n    yp[i] &lt;&lt;- ifelse(pip1 &gt; pip2, M1 %*% xp, M2 %*% xp)\n  }\n  return(like)\n}",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#parameter-estimation-4",
+    "href": "cap6.html#parameter-estimation-4",
+    "title": "4  Capítulo 6",
+    "section": "16.4 Parameter Estimation",
+    "text": "16.4 Parameter Estimation\nWe estimate the parameters using the optim function.\n\n# Initial parameters\ninit.par &lt;- c(alpha1 = 1.4, alpha2 = -0.5, beta0 = 0.3, sQ1 = 0.1, sQ2 = 0.1)\n\n# Perform optimization\nest &lt;- optim(init.par, Linn, NULL, method = \"BFGS\", hessian = TRUE, control = list(trace = 1, REPORT = 1))\n\ninitial  value -236.860522 \niter   2 value -313.882451\niter   3 value -320.373891\niter   4 value -322.538581\niter   5 value -326.037522\niter   6 value -326.220434\niter   7 value -328.165001\niter   8 value -337.802054\niter   9 value -339.102455\niter  10 value -339.278478\niter  11 value -339.295742\niter  12 value -339.295935\niter  13 value -339.295949\niter  13 value -339.295949\nfinal  value -339.295949 \nconverged\n\nSE &lt;- sqrt(diag(solve(est$hessian)))\n\n# Display estimates and standard errors\nu &lt;- cbind(estimate = est$par, SE)\nrownames(u) &lt;- c('alpha1', 'alpha2', 'beta0', 'sQ1', 'sQ2')\nu\n\n          estimate          SE\nalpha1  1.40570967 0.078587727\nalpha2 -0.62198715 0.068733109\nbeta0   0.21049042 0.024625302\nsQ1     0.02310306 0.001635291\nsQ2     0.11217287 0.016684663",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
+  },
+  {
+    "objectID": "cap6.html#visualization-3",
+    "href": "cap6.html#visualization-3",
+    "title": "4  Capítulo 6",
+    "section": "16.5 Visualization",
+    "text": "16.5 Visualization\nThe plots below show the observed influenza counts, the filtered states, and the predicted counts with confidence intervals.\n\n# Graphics setup\npredepi &lt;- ifelse(prob &lt; 0.5, 0, 1)\nk &lt;- 6:length(y)\nTime &lt;- time(flu)[k]\nregime &lt;- predepi[k] + 1\n\npar(mfrow = c(3, 1), mar = c(2, 3, 1, 1) + 0.1)\n\n# Plot (a): Observed data and regimes\nplot(Time, y[k], type = \"n\", ylab = \"\")\ngrid(lty = 2)\nlines(Time, y[k], col = gray(0.7))\ntext(Time, y[k], col = regime, labels = regime, cex = 1.1)\ntext(1979, 0.95, \"(a)\")\n\n# Plot (b): Filtered states\nplot(Time, xfilter[1, , k], type = \"n\", ylim = c(-0.1, 0.4), ylab = \"\")\ngrid(lty = 2)\nlines(Time, xfilter[1, , k])\nlines(Time, xfilter[3, , k])\nlines(Time, xfilter[4, , k])\ntext(1979, 0.35, \"(b)\")\n\n# Plot (c): Predictions with confidence intervals\nplot(Time, y[k], type = \"n\", ylim = c(0.1, 0.9), ylab = \"\")\ngrid(lty = 2)\npoints(Time, y[k], pch = 19)\n\n\n\n\n\n\n\n# Bug in book's code \n# prde1 &lt;- 2 * sqrt(innov.sig[1])\n# prde2 &lt;- 2 * sqrt(innov.sig[2])\n# prde &lt;- ifelse(predepi[k] &lt; 0.5, prde1, prde2)\n# \n# xx &lt;- c(Time, rev(Time))\n# yy &lt;- c(yp[k] - prde, rev(yp[k] + prde))\n# polygon(xx, yy, border = 8, col = gray(0.6, alpha = 0.3))\n# text(1979, 0.85, \"(c)\")",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Capítulo 6</span>"
+    ]
   }
 ]
